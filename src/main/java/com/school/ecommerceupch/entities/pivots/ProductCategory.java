@@ -1,5 +1,7 @@
-package com.school.ecommerceupch.entities;
+package com.school.ecommerceupch.entities.pivots;
 
+import com.school.ecommerceupch.entities.Category;
+import com.school.ecommerceupch.entities.Product;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +21,5 @@ public class ProductCategory {
 
     @ManyToOne
     private Category category;
-    
+
 }
