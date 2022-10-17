@@ -13,8 +13,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @Column(unique = true)
     private User user;
+    
     @Column(length = 10)
     private String status;
 
