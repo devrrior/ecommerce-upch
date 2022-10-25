@@ -21,15 +21,20 @@ public class Product {
 
     private String description;
 
+    private String imageUrl;
+
     private Integer stock;
 
     private Float price;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany(mappedBy = "category")
     private List<ProductCategory> productCategories;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems;
 
 }

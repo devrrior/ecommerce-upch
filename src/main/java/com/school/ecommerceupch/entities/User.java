@@ -1,7 +1,5 @@
 package com.school.ecommerceupch.entities;
 
-import com.fasterxml.jackson.databind.DatabindException;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,14 +27,12 @@ public class User {
     @Column(length = 40)
     private String lastName;
 
-    @Column(length = 40)
-    private String role;
-    
     private Date dateOfBirth;
 
-    /*@OneToMany(mappedBy = "user")
-    private List<Address> adresses;
+    @ManyToOne
+    @JoinColumn(name = "userRole_id")
+    private UserRole userRole;
 
     @OneToMany(mappedBy = "user")
-    private List<Order> orders;*/
+    private List<Product> products;
 }

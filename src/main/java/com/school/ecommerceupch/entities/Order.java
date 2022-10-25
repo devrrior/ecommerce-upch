@@ -13,17 +13,15 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    private User user;
-    
     @Column(length = 10)
     private String status;
 
-    /*
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "orderStatus_id")
+    private OrderStatus orderStatus;
 
-    @OneToMany
-    private List<OrderItem> orderItems;
-     */
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

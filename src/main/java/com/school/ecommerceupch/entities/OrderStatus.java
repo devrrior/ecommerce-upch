@@ -7,16 +7,16 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "userRoles")
+@Table(name = "orderStatuses")
 @Getter @Setter
-public class UserRole {
+public class OrderStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 150)
     private String name;
 
-    @OneToMany(mappedBy = "userRole")
-    private List<User> users;
+    @OneToMany(mappedBy = "orderStatus")
+    private List<Order> orders;
 }
