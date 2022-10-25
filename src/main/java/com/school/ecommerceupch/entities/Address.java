@@ -27,13 +27,8 @@ public class Address {
     @Column(length = 100)
     private String country;
 
-
-
-    /*ManyToOne
-     */
-    /*
-    JoinColumn(name="user_id", nullable = false )
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
-     */
 
 }
