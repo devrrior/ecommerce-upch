@@ -9,7 +9,7 @@ public interface IUserRoleService {
     BaseResponse create(CreateUserRoleRequest request);
     BaseResponse get(Long id);
     BaseResponse update(Long id, UpdateUserRoleRequest request);
-    void delete(Long id);
+    BaseResponse delete(Long id);
 
     UserRole findByName(String name);
 
