@@ -1,0 +1,16 @@
+package com.school.ecommerceupch.services.interfaces;
+
+import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
+import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.entities.UserRole;
+
+public interface IUserRoleService {
+    BaseResponse create(CreateUserRoleRequest request);
+    BaseResponse get(Long id);
+    BaseResponse update(Long id, UpdateUserRoleRequest request);
+    void delete(Long id);
+
+    UserRole findByName(String name);
+
+}
