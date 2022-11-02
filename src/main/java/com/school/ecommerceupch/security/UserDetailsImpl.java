@@ -10,7 +10,6 @@ import java.util.Collections;
 
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-
     private final User user;
 
     @Override
@@ -20,12 +19,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.user.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.user.getEmail();
+        return user.getEmail();
     }
 
     @Override
@@ -48,7 +47,7 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public String getFirstName() {
-        return this.user.getFirstName();
+    public String getName() {
+        return user.getFirstName();
     }
 }
