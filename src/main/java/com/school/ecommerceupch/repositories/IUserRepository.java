@@ -11,5 +11,4 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     Boolean existsUserById(Long id);
     User getUserById(Long id);
 
-
 }

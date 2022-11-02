@@ -4,6 +4,8 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.dtos.responses.GetUserRoleResponse;
+import com.school.ecommerceupch.controllers.exceptions.UserRoleAlreadyExistsException;
+import com.school.ecommerceupch.controllers.exceptions.UserRoleNotFoundException;
 import com.school.ecommerceupch.entities.UserRole;
 import com.school.ecommerceupch.repositories.IUserRoleRepository;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
@@ -16,14 +18,9 @@ public class UserRoleServiceImpl implements IUserRoleService {
     @Autowired
     private IUserRoleRepository repository;
     @Override
-    public BaseResponse create(CreateUserRoleRequest request) {
+    public BaseResponse create(CreateUserRoleRequest request) throws UserRoleAlreadyExistsException {
         if(repository.existsUserRoleByName(request.getName())) {
-            return BaseResponse.builder()
-                    .data(null)
-                    .message("User Role already exists")
-                    .success(Boolean.FALSE)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
-                    .build();
+            throw new UserRoleAlreadyExistsException("user role already exists");
         }
         return BaseResponse.builder()
                 .data(toGetUserRoleResponse(repository.save(toUserRole(request))))
@@ -34,9 +31,9 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse get(Long id) {
+    public BaseResponse get(Long id) throws UserRoleNotFoundException {
         if (!repository.existsById(id)) {
-            return userRoleDoesntExists();
+            throw new UserRoleNotFoundException("user role doesn´t exist");
         }
         return BaseResponse.builder()
                 .data(toGetUserRoleResponse(repository.getUserRoleById(id)))
@@ -47,9 +44,9 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse update(Long id, UpdateUserRoleRequest request) {
+    public BaseResponse update(Long id, UpdateUserRoleRequest request) throws UserRoleNotFoundException {
         if (!repository.existsById(id)) {
-            return userRoleDoesntExists();
+            throw new UserRoleNotFoundException("user role doesn´t exist");
         }
         return BaseResponse.builder()
                 .data(toGetUserRoleResponse(repository.save(toUserRoleUpdate(request, id))))
@@ -60,9 +57,9 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse delete(Long id) {
+    public BaseResponse delete(Long id) throws UserRoleNotFoundException {
         if(!repository.existsById(id)) {
-            return userRoleDoesntExists();
+            throw new UserRoleNotFoundException("user role doesn´t exist");
         }
         repository.deleteById(id);
         return BaseResponse.builder()
@@ -70,15 +67,6 @@ public class UserRoleServiceImpl implements IUserRoleService {
                 .message("User Role deleted correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
-                .build();
-    }
-
-    private BaseResponse userRoleDoesntExists() {
-        return BaseResponse.builder()
-                .data(null)
-                .message("User Role doesn't exists")
-                .success(Boolean.FALSE)
-                .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
     }
 

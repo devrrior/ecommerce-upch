@@ -4,6 +4,8 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.dtos.responses.GetUserResponse;
+import com.school.ecommerceupch.controllers.exceptions.UserAlreadyExistsException;
+import com.school.ecommerceupch.controllers.exceptions.UserNotFoundException;
 import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.entities.UserRole;
 import com.school.ecommerceupch.repositories.IUserRepository;
@@ -22,14 +24,9 @@ public class UserServiceImpl implements IUserService {
     private IUserRoleService roleService;
 
     @Override
-    public BaseResponse create(CreateUserRequest request) {
+    public BaseResponse create(CreateUserRequest request) throws UserAlreadyExistsException {
         if (repository.existsUserByEmail(request.getEmail())) {
-            return BaseResponse.builder()
-                    .data(null)
-                    .message("Email is taken")
-                    .success(Boolean.FALSE)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
-                    .build();
+            throw new UserAlreadyExistsException("email is taken");
         }
         User user = toUser(request);
         return BaseResponse.builder()
@@ -41,9 +38,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public BaseResponse get(Long id) {
+    public BaseResponse get(Long id) throws UserNotFoundException {
+
         if (!repository.existsUserById(id)) {
-            return userDoesntExist();
+            throw new UserNotFoundException("user doesn´t exists");
         }
         return BaseResponse.builder()
                 .data(toGetUserResponse(repository.getUserById(id)))
@@ -54,17 +52,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public BaseResponse update(UpdateUserRequest request, Long id) {
+    public BaseResponse update(UpdateUserRequest request, Long id) throws UserNotFoundException, UserAlreadyExistsException {
         if (!repository.existsUserById(id)) {
-            return userDoesntExist();
+            throw new UserNotFoundException("user doesn´t exists");
         }
         if (repository.existsUserByEmail(request.getEmail())) {
-            return BaseResponse.builder()
-                    .data(null)
-                    .message("Email is taken")
-                    .success(Boolean.FALSE)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
-                    .build();
+            throw new UserAlreadyExistsException("email is taken");
         }
         User user = toUserUpdate(request, id);
         return BaseResponse.builder()
@@ -76,9 +69,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public BaseResponse delete(Long id) {
-        if(!repository.existsUserById(id)) {
-            return userDoesntExist();
+    public BaseResponse delete(Long id) throws UserNotFoundException {
+        if (!repository.existsUserById(id)) {
+            throw new UserNotFoundException("user doesn´t exists");
         }
 
         repository.deleteById(id);
@@ -91,14 +84,6 @@ public class UserServiceImpl implements IUserService {
                 .build();
     }
 
-    private BaseResponse userDoesntExist() {
-        return BaseResponse.builder()
-                .data(null)
-                .message("User doesn't exists")
-                .success(Boolean.FALSE)
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .build();
-    }
     private User toUser(CreateUserRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
