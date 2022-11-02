@@ -3,27 +3,25 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
-import com.school.ecommerceupch.controllers.dtos.responses.GetUserRoleResponse;
-import com.school.ecommerceupch.controllers.exceptions.UserRoleAlreadyExistsException;
-import com.school.ecommerceupch.controllers.exceptions.UserRoleNotFoundException;
 import com.school.ecommerceupch.entities.UserRole;
 import com.school.ecommerceupch.repositories.IUserRoleRepository;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserRoleServiceImpl implements IUserRoleService {
-    @Autowired
-    private IUserRoleRepository repository;
+    private final IUserRoleRepository repository;
+
+    public UserRoleServiceImpl(IUserRoleRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
-    public BaseResponse create(CreateUserRoleRequest request) throws UserRoleAlreadyExistsException {
-        if(repository.existsUserRoleByName(request.getName())) {
-            throw new UserRoleAlreadyExistsException("user role already exists");
-        }
+    public BaseResponse create(CreateUserRoleRequest request) {
+        UserRole userRole = repository.save(from(request));
         return BaseResponse.builder()
-                .data(toGetUserRoleResponse(repository.save(toUserRole(request))))
+                .data(userRole)
                 .message("User Role created correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
@@ -31,12 +29,11 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse get(Long id) throws UserRoleNotFoundException {
-        if (!repository.existsById(id)) {
-            throw new UserRoleNotFoundException("user role doesn´t exist");
-        }
+    public BaseResponse get(Long id) {
+        UserRole userRole = findOneAndEnsureExist(id);
+
         return BaseResponse.builder()
-                .data(toGetUserRoleResponse(repository.getUserRoleById(id)))
+                .data(userRole)
                 .message("User Role exists")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
@@ -44,12 +41,12 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse update(Long id, UpdateUserRoleRequest request) throws UserRoleNotFoundException {
-        if (!repository.existsById(id)) {
-            throw new UserRoleNotFoundException("user role doesn´t exist");
-        }
+    public BaseResponse update(Long id, UpdateUserRoleRequest request) {
+        UserRole userRole = findOneAndEnsureExist(id);
+        userRole = update(userRole, request);
+
         return BaseResponse.builder()
-                .data(toGetUserRoleResponse(repository.save(toUserRoleUpdate(request, id))))
+                .data(userRole)
                 .message("User Role updated correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
@@ -57,40 +54,31 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse delete(Long id) throws UserRoleNotFoundException {
-        if(!repository.existsById(id)) {
-            throw new UserRoleNotFoundException("user role doesn´t exist");
-        }
+    public BaseResponse delete(Long id) {
         repository.deleteById(id);
+
         return BaseResponse.builder()
                 .data(null)
                 .message("User Role deleted correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
+                .httpStatus(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    private GetUserRoleResponse toGetUserRoleResponse(UserRole userRole) {
-        GetUserRoleResponse response = new GetUserRoleResponse();
-        response.setName(userRole.getName());
-        response.setId(userRole.getId());
-        return response;
+    @Override
+    public UserRole findOneAndEnsureExist(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("User Role not found"));
     }
 
-    private UserRole toUserRole(CreateUserRoleRequest request) {
+    private UserRole from(CreateUserRoleRequest request) {
         UserRole userRole = new UserRole();
         userRole.setName(request.getName());
         return userRole;
     }
 
-    private UserRole toUserRoleUpdate(UpdateUserRoleRequest request, Long id) {
-        UserRole userRole = repository.getUserRoleById(id);
+    private UserRole update(UserRole userRole, UpdateUserRoleRequest request) {
         userRole.setName(request.getName());
-        return userRole;
+        return repository.save(userRole);
     }
 
-    @Override
-    public UserRole findByName(String name) {
-        return repository.findByName(name);
-    }
 }
