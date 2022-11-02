@@ -1,7 +1,5 @@
 package com.school.ecommerceupch.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Setter @Getter
+@Setter
+@Getter
 public class Product {
 
     @Id
