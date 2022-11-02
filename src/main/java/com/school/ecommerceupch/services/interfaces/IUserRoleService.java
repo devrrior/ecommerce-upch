@@ -14,6 +14,8 @@ public interface IUserRoleService {
 
     BaseResponse delete(Long id);
 
-    UserRole findOneAndEnsureExist(Long id);
+    UserRole findOneAndEnsureExistById(Long id);
+
+    UserRole findOneAndEnsureExistByName(String name);
 
 }

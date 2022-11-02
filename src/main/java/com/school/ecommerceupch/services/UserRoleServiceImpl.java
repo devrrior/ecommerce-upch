@@ -30,7 +30,7 @@ public class UserRoleServiceImpl implements IUserRoleService {
 
     @Override
     public BaseResponse get(Long id) {
-        UserRole userRole = findOneAndEnsureExist(id);
+        UserRole userRole = findOneAndEnsureExistById(id);
 
         return BaseResponse.builder()
                 .data(userRole)
@@ -42,7 +42,7 @@ public class UserRoleServiceImpl implements IUserRoleService {
 
     @Override
     public BaseResponse update(Long id, UpdateUserRoleRequest request) {
-        UserRole userRole = findOneAndEnsureExist(id);
+        UserRole userRole = findOneAndEnsureExistById(id);
         userRole = update(userRole, request);
 
         return BaseResponse.builder()
@@ -66,8 +66,13 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public UserRole findOneAndEnsureExist(Long id) {
+    public UserRole findOneAndEnsureExistById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User Role not found"));
+    }
+
+    @Override
+    public UserRole findOneAndEnsureExistByName(String name) {
+        return repository.findByName(name).orElseThrow(()-> new RuntimeException("User Role not found"));
     }
 
     private UserRole from(CreateUserRoleRequest request) {
