@@ -1,5 +1,8 @@
 package com.school.ecommerceupch.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +21,6 @@ public class UserRole {
     private String name;
 
     @OneToMany(mappedBy = "userRole")
+    @JsonBackReference
     private List<User> users;
 }
