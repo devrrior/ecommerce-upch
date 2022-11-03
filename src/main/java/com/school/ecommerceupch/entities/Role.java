@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "userRoles")
+@Table(name = "roles")
 @Getter
 @Setter
 public class Role {
