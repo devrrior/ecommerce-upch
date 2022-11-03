@@ -1,6 +1,8 @@
 package com.school.ecommerceupch.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,10 +33,9 @@ public class User {
 
     private Date dateOfBirth;
 
-    @ManyToOne
-    @JoinColumn(name = "userRole_id")
-    @JsonManagedReference
-    private UserRole userRole;
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
+    private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user")
     private List<Product> products;

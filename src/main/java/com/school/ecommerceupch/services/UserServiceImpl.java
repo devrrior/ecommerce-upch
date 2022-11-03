@@ -4,9 +4,9 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.entities.User;
-import com.school.ecommerceupch.entities.UserRole;
+import com.school.ecommerceupch.entities.Role;
 import com.school.ecommerceupch.repositories.IUserRepository;
-import com.school.ecommerceupch.services.interfaces.IUserRoleService;
+import com.school.ecommerceupch.services.interfaces.IRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements IUserService {
     private final IUserRepository repository;
-    private final IUserRoleService userRoleService;
+    private final IRoleService userRoleService;
 
-    public UserServiceImpl(IUserRepository repository, IUserRoleService userRoleService) {
+    public UserServiceImpl(IUserRepository repository, IRoleService userRoleService) {
         this.repository = repository;
         this.userRoleService = userRoleService;
     }
@@ -86,8 +86,8 @@ public class UserServiceImpl implements IUserService {
         user.setDateOfBirth(request.getDateOfBirth());
         user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
 
-        UserRole role = userRoleService.findOneAndEnsureExistByName("USER");
-        user.setUserRole(role);
+        Role role = userRoleService.findOneAndEnsureExistByName("USER");
+        user.setRole(role);
         return user;
     }
 
