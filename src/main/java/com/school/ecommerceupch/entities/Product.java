@@ -31,7 +31,7 @@ public class Product {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "product")
     private List<ProductCategory> productCategories;
 
     @OneToMany(mappedBy = "product")
