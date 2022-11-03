@@ -5,11 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IOrderStatusRepository extends JpaRepository<OrderStatus, Long>{
 
-    @Query
-    OrderStatus getOrderStatusById(Long id);
-    OrderStatus findByName(String name);
-    Boolean existsOrderStatusByName(String name);
+    Optional<OrderStatus> findByName(String name);
 }

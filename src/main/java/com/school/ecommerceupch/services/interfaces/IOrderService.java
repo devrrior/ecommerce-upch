@@ -12,5 +12,6 @@ public interface IOrderService {
     BaseResponse update(Long Id, UpdateOrderRequest request);
     BaseResponse delete(Long Id);
 
-    Order findByStatus(String Status);
+
+    Order findOneAndEnsureExistById(Long id);
 }

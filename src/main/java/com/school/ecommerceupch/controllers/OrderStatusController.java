@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("orderStatus")
+@RequestMapping("order-status")
 @RestController
 public class OrderStatusController {
     @Autowired
