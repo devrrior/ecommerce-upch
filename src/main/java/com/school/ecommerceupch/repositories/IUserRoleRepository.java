@@ -12,13 +12,13 @@ public interface IUserRoleRepository extends JpaRepository<UserRole, Long> {
 
     @Query(value = "select users.* from users_roles " +
             "inner join users on users_roles.user_id = users.id " +
-            "inner join roles on user_roles.role_id = roles.id " +
+            "inner join roles on users_roles.role_id = roles.id " +
             "where users_roles.role_id = :roleId", nativeQuery = true)
-    List<UserProjection> listAllUsersByRoleId(Long id);
+    List<UserProjection> listAllUsersByRoleId(Long roleId);
 
     @Query(value = "select roles.* users_roles " +
             "inner join users on users_roles.user_id = users.id " +
             "inner join roles on users_roles.role_id = roles.id " +
             "where users_roles.user_id = :userId", nativeQuery = true)
-    List<RoleProjection> listAllRolesByUserId(Long id);
+    List<RoleProjection> listAllRolesByUserId(Long userId);
 }
