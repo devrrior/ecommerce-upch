@@ -1,16 +1,19 @@
 package com.school.ecommerceupch.services;
 
-import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
-import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
-import com.school.ecommerceupch.entities.UserRole;
+import com.school.ecommerceupch.entities.Role;
+import com.school.ecommerceupch.entities.User;
+import com.school.ecommerceupch.entities.projections.RoleProjection;
+import com.school.ecommerceupch.entities.projections.UserProjection;
 import com.school.ecommerceupch.repositories.IUserRoleRepository;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserRoleServiceImpl implements IUserRoleService {
+
     private final IUserRoleRepository repository;
 
     public UserRoleServiceImpl(IUserRoleRepository repository) {
@@ -18,72 +21,54 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public BaseResponse create(CreateUserRoleRequest request) {
-        UserRole userRole = repository.save(from(request));
-        return BaseResponse.builder()
-                .data(userRole)
-                .message("User Role created correctly")
-                .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
-                .build();
-    }
+    public BaseResponse listAllUsersByRoleId(Long id) {
 
-    @Override
-    public BaseResponse get(Long id) {
-        UserRole userRole = findOneAndEnsureExistById(id);
+        List<UserProjection> userProjections = repository.listAllUsersByRoleId(id);
+        List<User> users = userProjections.stream()
+                .map(this::from).collect(Collectors.toList());
 
         return BaseResponse.builder()
-                .data(userRole)
-                .message("User Role exists")
+                .data(users)
+                .message("User list by role id")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
-                .build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override
-    public BaseResponse update(Long id, UpdateUserRoleRequest request) {
-        UserRole userRole = findOneAndEnsureExistById(id);
-        userRole = update(userRole, request);
+    public BaseResponse listAllRolesByUserId(Long id) {
+
+        List<RoleProjection> roleProjections = repository.listAllRolesByUserId(id);
+        List<Role> roles = roleProjections.stream()
+                .map(this::from).collect(Collectors.toList());
 
         return BaseResponse.builder()
-                .data(userRole)
-                .message("User Role updated correctly")
+                .data(roles)
+                .message("Role list by user id")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
-                .build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
-    @Override
-    public BaseResponse delete(Long id) {
-        repository.deleteById(id);
+    private User from(UserProjection userProjection) {
+        User user = new User();
+        user.setId(userProjection.getId());
+        user.setEmail(userProjection.getEmail());
+        user.setPassword(userProjection.getPassword());
+        user.setFirstName(userProjection.getFirstName());
+        user.setLastName(userProjection.getLastName());
+        user.setDateOfBirth(userProjection.getDateOfBirth());
+        user.setUserRoles(userProjection.getUserRoles());
+        user.setProducts(userProjection.getProducts());
+        user.setAddresses(userProjection.getAddresses());
 
-        return BaseResponse.builder()
-                .data(null)
-                .message("User Role deleted correctly")
-                .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.NO_CONTENT)
-                .build();
+        return user;
     }
 
-    @Override
-    public UserRole findOneAndEnsureExistById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("User Role not found"));
-    }
+    private Role from(RoleProjection roleProjection) {
+        Role role = new Role();
+        role.setId(roleProjection.getId());
+        role.setName(roleProjection.getName());
+        role.setUserRoles(roleProjection.getUserRoles());
 
-    @Override
-    public UserRole findOneAndEnsureExistByName(String name) {
-        return repository.findByName(name).orElseThrow(()-> new RuntimeException("User Role not found"));
+        return role;
     }
-
-    private UserRole from(CreateUserRoleRequest request) {
-        UserRole userRole = new UserRole();
-        userRole.setName(request.getName());
-        return userRole;
-    }
-
-    private UserRole update(UserRole userRole, UpdateUserRoleRequest request) {
-        userRole.setName(request.getName());
-        return repository.save(userRole);
-    }
-
 }

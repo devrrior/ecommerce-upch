@@ -3,7 +3,7 @@ package com.school.ecommerceupch.controllers;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
-import com.school.ecommerceupch.services.interfaces.IUserRoleService;
+import com.school.ecommerceupch.services.interfaces.IRoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +12,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("role")
 public class UserRoleController {
-    private final IUserRoleService service;
+    private final IRoleService service;
 
-    public UserRoleController(IUserRoleService service) {
+    public UserRoleController(IRoleService service) {
         this.service = service;
     }
 
