@@ -3,21 +3,31 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.entities.Role;
 import com.school.ecommerceupch.entities.User;
+import com.school.ecommerceupch.entities.pivots.UserRole;
 import com.school.ecommerceupch.entities.projections.RoleProjection;
 import com.school.ecommerceupch.entities.projections.UserProjection;
 import com.school.ecommerceupch.repositories.IUserRoleRepository;
+import com.school.ecommerceupch.services.interfaces.IRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
+import com.school.ecommerceupch.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class UserRoleServiceImpl implements IUserRoleService {
 
     private final IUserRoleRepository repository;
+    private final IUserService userService;
+    private final IRoleService roleService;
 
-    public UserRoleServiceImpl(IUserRoleRepository repository) {
+
+    public UserRoleServiceImpl(IUserRoleRepository repository, IUserService userService, IRoleService roleService) {
         this.repository = repository;
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @Override
@@ -37,15 +47,30 @@ public class UserRoleServiceImpl implements IUserRoleService {
     @Override
     public BaseResponse listAllRolesByUserId(Long id) {
 
-        List<RoleProjection> roleProjections = repository.listAllRolesByUserId(id);
-        List<Role> roles = roleProjections.stream()
-                .map(this::from).collect(Collectors.toList());
+        List<Role> roles = getAllRolesByUserId(id);
 
         return BaseResponse.builder()
                 .data(roles)
                 .message("Role list by user id")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK).build();
+    }
+
+    @Override
+    public List<Role> getAllRolesByUserId(Long id) {
+        List<RoleProjection> roleProjections = repository.listAllRolesByUserId(id);
+
+        return roleProjections.stream()
+                .map(this::from).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserRole create(Long userId, Long roleId) {
+        UserRole userRole = new UserRole();
+        userRole.setRole(roleService.findOneAndEnsureExistById(roleId));
+        userRole.setUser(userService.findOneAndEnsureExistById(userId));
+
+        return userRole;
     }
 
     private User from(UserProjection userProjection) {
