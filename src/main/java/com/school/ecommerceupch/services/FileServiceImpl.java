@@ -38,7 +38,7 @@ public class FileServiceImpl implements IFileService {
     private String SECRET_KEY = "";
 
     @Override
-    public String upload(MultipartFile multipartFile, Long idUser) {
+    public String upload(MultipartFile multipartFile, Long idProduct) {
         String fileUrl= "";
 
         try {
@@ -56,7 +56,7 @@ public class FileServiceImpl implements IFileService {
             e.printStackTrace();
         }
 
-        productService.updateProductImage(fileUrl, idUser);
+        productService.updateProductImage(fileUrl, idProduct);
 
         return fileUrl;
     }
