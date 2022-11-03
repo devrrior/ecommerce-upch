@@ -1,11 +1,9 @@
 package com.school.ecommerceupch.entities.projections;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.school.ecommerceupch.entities.Address;
 import com.school.ecommerceupch.entities.Product;
 import com.school.ecommerceupch.entities.pivots.UserRole;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 

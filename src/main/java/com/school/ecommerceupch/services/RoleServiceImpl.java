@@ -72,7 +72,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public Role findOneAndEnsureExistByName(String name) {
-        return repository.findByName(name).orElseThrow(()-> new RuntimeException("User Role not found"));
+        return repository.findByName(name).orElseThrow(() -> new RuntimeException("User Role not found"));
     }
 
     private Role from(CreateUserRoleRequest request) {
