@@ -2,6 +2,7 @@ package com.school.ecommerceupch.controllers.advices;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.AccessDeniedException;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,21 @@ public class ApplicationExceptionHandler {
                 .message("Operation failed")
                 .success(Boolean.FALSE)
                 .httpStatus(HttpStatus.NOT_FOUND).build();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("message", "Access to the requested resource is forbidden");
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .data(errors)
+                .message("Operation failed")
+                .success(Boolean.FALSE)
+                .httpStatus(HttpStatus.FORBIDDEN).build();
 
         return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }

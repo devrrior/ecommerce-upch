@@ -1,8 +1,8 @@
 package com.school.ecommerceupch.controllers.exceptions;
 
-public class AccessDeniedException extends Exception {
+public class AccessDeniedException extends RuntimeException {
 
-    public AccessDeniedException(String msg) {
-        super(msg);
+    public AccessDeniedException() {
+        super();
     }
 }
