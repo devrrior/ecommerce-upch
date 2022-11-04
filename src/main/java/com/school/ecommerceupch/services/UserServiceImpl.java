@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.dtos.responses.UserResponse;
+import com.school.ecommerceupch.controllers.exceptions.AccessDeniedException;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import com.school.ecommerceupch.entities.Role;
@@ -35,14 +36,21 @@ public class UserServiceImpl implements IUserService {
         this.userRoleService = userRoleService;
     }
 
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return userDetails;
+    }
+
     @Override
     public BaseResponse get(Long id) {
 
-        User user = findOneAndEnsureExistById(id);
+        UserDetailsImpl userDetails = getUserAuthenticated();
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        System.out.println("holaaaa " + userDetails.getFirstName() + userDetails.getLastName());
+        if (!userDetails.getId().equals(id))
+            throw new AccessDeniedException();
+
+        User user = findOneAndEnsureExistById(id);
 
         return BaseResponse.builder()
                 .data(from(user))
@@ -74,6 +82,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public BaseResponse update(UpdateUserRequest request, Long id) {
+
+        UserDetailsImpl userDetails = getUserAuthenticated();
+
+        if (!userDetails.getId().equals(id))
+            throw new AccessDeniedException();
+
         User user = findOneAndEnsureExistById(id);
 
         user = update(user, request);
@@ -88,6 +102,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public BaseResponse delete(Long id) {
+
+        UserDetailsImpl userDetails = getUserAuthenticated();
+
+        if (!userDetails.getId().equals(id))
+            throw new AccessDeniedException();
 
         if (!repository.existsById(id))
             throw new ObjectNotFoundException("User not found");
@@ -154,5 +173,4 @@ public class UserServiceImpl implements IUserService {
 
         return userResponse;
     }
-
 }
