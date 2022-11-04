@@ -1,6 +1,6 @@
 package com.school.ecommerceupch.entities.pivots;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.school.ecommerceupch.entities.Category;
 import com.school.ecommerceupch.entities.Product;
 import lombok.Getter;
@@ -10,7 +10,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "products_categories")
-@Getter @Setter
+@Getter
+@Setter
 public class ProductCategory {
 
     @Id
@@ -24,7 +25,7 @@ public class ProductCategory {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonBackReference(value = "category")
+    @JsonManagedReference
     private Category category;
 
 }

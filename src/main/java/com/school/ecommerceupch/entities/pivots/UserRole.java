@@ -1,31 +1,32 @@
-package com.school.ecommerceupch.entities;
+package com.school.ecommerceupch.entities.pivots;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.school.ecommerceupch.entities.Role;
+import com.school.ecommerceupch.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "users_roles")
 @Getter
 @Setter
-public class Order {
+public class UserRole {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "orderStatus_id")
-    @JsonManagedReference
-    private OrderStatus orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonManagedReference
     private User user;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    @JsonManagedReference
+    private Role role;
+
+
 }

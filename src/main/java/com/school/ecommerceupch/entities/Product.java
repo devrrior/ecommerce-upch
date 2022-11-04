@@ -1,6 +1,6 @@
 package com.school.ecommerceupch.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import lombok.Getter;
@@ -11,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Setter @Getter
+@Setter
+@Getter
 public class Product {
 
     @Id
@@ -31,14 +32,15 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User user;
 
-    @OneToMany(mappedBy = "product")
-    @JsonManagedReference(value = "product")
+    @OneToMany(mappedBy = "category")
+    @JsonBackReference
     private List<ProductCategory> productCategories;
 
     @OneToMany(mappedBy = "product")
-    @JsonManagedReference(value = "product")
+    @JsonBackReference
     private List<OrderItem> orderItems;
 
 }

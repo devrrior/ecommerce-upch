@@ -15,4 +15,5 @@ public class BaseResponse {
     private Boolean success;
 
     private HttpStatus httpStatus;
+
 }

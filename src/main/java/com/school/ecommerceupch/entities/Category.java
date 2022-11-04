@@ -1,5 +1,6 @@
 package com.school.ecommerceupch.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "categories")
-@Setter @Getter
+@Setter
+@Getter
 public class Category {
 
     @Id
@@ -19,6 +21,7 @@ public class Category {
     @Column(length = 100)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "product")
+    @JsonBackReference
     private List<ProductCategory> productCategories;
 }
