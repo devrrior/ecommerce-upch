@@ -39,8 +39,7 @@ public class UserServiceImpl implements IUserService {
 
     private static UserDetailsImpl getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return userDetails;
+        return (UserDetailsImpl) authentication.getPrincipal();
     }
 
     @Override
@@ -48,7 +47,7 @@ public class UserServiceImpl implements IUserService {
 
         UserDetailsImpl userDetails = getUserAuthenticated();
 
-        if (!userDetails.getId().equals(id))
+        if (!userDetails.getUser().getId().equals(id))
             throw new AccessDeniedException();
 
         User user = findOneAndEnsureExistById(id);
@@ -86,7 +85,7 @@ public class UserServiceImpl implements IUserService {
 
         UserDetailsImpl userDetails = getUserAuthenticated();
 
-        if (!userDetails.getId().equals(id))
+        if (!userDetails.getUser().getId().equals(id))
             throw new AccessDeniedException();
 
         User user = findOneAndEnsureExistById(id);
@@ -106,7 +105,7 @@ public class UserServiceImpl implements IUserService {
 
         UserDetailsImpl userDetails = getUserAuthenticated();
 
-        if (!userDetails.getId().equals(id))
+        if (!userDetails.getUser().getId().equals(id))
             throw new AccessDeniedException();
 
         if (!repository.existsById(id))

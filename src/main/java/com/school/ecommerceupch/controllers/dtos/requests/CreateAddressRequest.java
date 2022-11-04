@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateAddressRequest {
-    private Long id;
     private String street;
     private String zipcode;
     private String state;
     private String country;
-    private User user;
 }

@@ -6,12 +6,10 @@ import com.school.ecommerceupch.controllers.exceptions.AccessDeniedException;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.Order;
 import com.school.ecommerceupch.entities.OrderStatus;
-import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.repositories.IOrderRepository;
 import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.IOrderService;
 import com.school.ecommerceupch.services.interfaces.IOrderStatusService;
-import com.school.ecommerceupch.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,12 +23,9 @@ public class OrderServiceImpl implements IOrderService {
 
     private final IOrderStatusService orderStatusService;
 
-    private final IUserService userService;
-
-    public OrderServiceImpl(IOrderRepository repository, IOrderStatusService orderStatusService, IUserService userService) {
+    public OrderServiceImpl(IOrderRepository repository, IOrderStatusService orderStatusService) {
         this.repository = repository;
         this.orderStatusService = orderStatusService;
-        this.userService = userService;
     }
 
     private static UserDetailsImpl getUserAuthenticated() {
@@ -44,11 +39,10 @@ public class OrderServiceImpl implements IOrderService {
         UserDetailsImpl userAuthenticated = getUserAuthenticated();
 
         OrderStatus defaultOrderStatus = orderStatusService.findOneAndEnsureExistByName("PENDING");
-        User currentUser = userService.findOneAndEnsureExistById(userAuthenticated.getId());
 
         Order order = new Order();
         order.setOrderStatus(defaultOrderStatus);
-        order.setUser(currentUser);
+        order.setUser(userAuthenticated.getUser());
 
         order = repository.save(order);
 
@@ -79,7 +73,7 @@ public class OrderServiceImpl implements IOrderService {
 
         Order order = findOneAndEnsureExistById(id);
 
-        if (!order.getUser().getId().equals(userDetails.getId()))
+        if (!order.getUser().getId().equals(userDetails.getUser().getId()))
             throw new AccessDeniedException();
 
         OrderStatus orderStatus = orderStatusService.findOneAndEnsureExistById(request.getOrderStatusId());
@@ -101,7 +95,7 @@ public class OrderServiceImpl implements IOrderService {
 
         Order order = findOneAndEnsureExistById(id);
 
-        if (!order.getUser().getId().equals(userDetails.getId()))
+        if (!order.getUser().getId().equals(userDetails.getUser().getId()))
             throw new AccessDeniedException();
 
         repository.deleteById(id);
