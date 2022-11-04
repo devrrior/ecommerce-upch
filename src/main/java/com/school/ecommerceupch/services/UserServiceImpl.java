@@ -37,6 +37,12 @@ public class UserServiceImpl implements IUserService {
         this.userRoleService = userRoleService;
     }
 
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return userDetails;
+    }
+
     @Override
     public BaseResponse get(Long id) {
 
@@ -167,11 +173,5 @@ public class UserServiceImpl implements IUserService {
         userResponse.setDateOfBirth(user.getDateOfBirth());
 
         return userResponse;
-    }
-    
-    private static UserDetailsImpl getUserAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return userDetails;
     }
 }
