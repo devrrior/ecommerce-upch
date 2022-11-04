@@ -13,9 +13,8 @@ public class FileController {
     private IFileService service;
 
     @PostMapping
-    public void upload(@RequestParam MultipartFile file,
-                       @RequestParam Long idUser){
-        service.upload(file, idUser);
+    public void upload(@RequestParam MultipartFile file){
+        service.upload(file);
     }
 
     @DeleteMapping
