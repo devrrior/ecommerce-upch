@@ -6,9 +6,11 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Getter @Setter
-public class CreateUserRoleRequest {
+@Getter
+@Setter
+public class CreateRoleRequest {
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private String name;
 }

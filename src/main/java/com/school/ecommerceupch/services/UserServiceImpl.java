@@ -3,65 +3,97 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
-import com.school.ecommerceupch.controllers.dtos.responses.GetUserResponse;
-import com.school.ecommerceupch.controllers.exceptions.UserAlreadyExistsException;
-import com.school.ecommerceupch.controllers.exceptions.UserNotFoundException;
+import com.school.ecommerceupch.controllers.dtos.responses.UserResponse;
+import com.school.ecommerceupch.controllers.exceptions.AccessDeniedException;
+import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
+import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
+import com.school.ecommerceupch.entities.Role;
 import com.school.ecommerceupch.entities.User;
-import com.school.ecommerceupch.entities.UserRole;
+import com.school.ecommerceupch.entities.pivots.UserRole;
 import com.school.ecommerceupch.repositories.IUserRepository;
+import com.school.ecommerceupch.security.UserDetailsImpl;
+import com.school.ecommerceupch.services.interfaces.IRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements IUserService {
-    @Autowired
-    private IUserRepository repository;
-    @Autowired
-    private IUserRoleService roleService;
+    private final IUserRepository repository;
+    private final IRoleService roleService;
+    private final IUserRoleService userRoleService;
+
+    public UserServiceImpl(IUserRepository repository, IRoleService roleService, IUserRoleService userRoleService) {
+        this.repository = repository;
+        this.roleService = roleService;
+        this.userRoleService = userRoleService;
+    }
+
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return userDetails;
+    }
 
     @Override
-    public BaseResponse create(CreateUserRequest request) throws UserAlreadyExistsException {
-        if (repository.existsUserByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("email is taken");
-        }
-        User user = toUser(request);
+    public BaseResponse get(Long id) {
+
+        UserDetailsImpl userDetails = getUserAuthenticated();
+
+        if (!userDetails.getId().equals(id))
+            throw new AccessDeniedException();
+
+        User user = findOneAndEnsureExistById(id);
+
         return BaseResponse.builder()
-                .data(toGetUserResponse(repository.save(user)))
+                .data(from(user))
+                .message("User found")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public BaseResponse create(CreateUserRequest request) {
+
+        if (repository.existsByEmail(request.getEmail()))
+            throw new UniqueConstraintViolationException("Email is already in use");
+
+        User user = repository.save(from(request));
+
+        Role defaultRole = roleService.findOneAndEnsureExistByName("ROLE_USER");
+
+        user = addRoleToUser(defaultRole, user);
+
+        return BaseResponse.builder()
+                .data(from(user))
                 .message("User created correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
+                .httpStatus(HttpStatus.CREATED)
                 .build();
     }
 
     @Override
-    public BaseResponse get(Long id) throws UserNotFoundException {
+    public BaseResponse update(UpdateUserRequest request, Long id) {
 
-        if (!repository.existsUserById(id)) {
-            throw new UserNotFoundException("user doesn´t exists");
-        }
-        return BaseResponse.builder()
-                .data(toGetUserResponse(repository.getUserById(id)))
-                .message("User exists")
-                .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
-                .build();
-    }
+        UserDetailsImpl userDetails = getUserAuthenticated();
 
-    @Override
-    public BaseResponse update(UpdateUserRequest request, Long id) throws UserNotFoundException, UserAlreadyExistsException {
-        if (!repository.existsUserById(id)) {
-            throw new UserNotFoundException("user doesn´t exists");
-        }
-        if (repository.existsUserByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("email is taken");
-        }
-        User user = toUserUpdate(request, id);
+        if (!userDetails.getId().equals(id))
+            throw new AccessDeniedException();
+
+        User user = findOneAndEnsureExistById(id);
+
+        user = update(user, request);
+
         return BaseResponse.builder()
-                .data(toGetUserResponse(repository.save(user)))
+                .data(from(user))
                 .message("User updated correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
@@ -69,10 +101,15 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public BaseResponse delete(Long id) throws UserNotFoundException {
-        if (!repository.existsUserById(id)) {
-            throw new UserNotFoundException("user doesn´t exists");
-        }
+    public BaseResponse delete(Long id) {
+
+        UserDetailsImpl userDetails = getUserAuthenticated();
+
+        if (!userDetails.getId().equals(id))
+            throw new AccessDeniedException();
+
+        if (!repository.existsById(id))
+            throw new ObjectNotFoundException("User not found");
 
         repository.deleteById(id);
 
@@ -80,11 +117,41 @@ public class UserServiceImpl implements IUserService {
                 .data(null)
                 .message("User deleted correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
+                .httpStatus(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    private User toUser(CreateUserRequest request) {
+    @Override
+    public User findOneAndEnsureExistById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("User not found"));
+    }
+
+    private User addRoleToUser(Role defaultRole, User user) {
+        UserRole userRole = userRoleService.create(user, defaultRole);
+
+        List<UserRole> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole);
+
+        user.setUserRoles(userRoleList);
+
+        user = repository.save(user);
+
+        return user;
+    }
+
+    private User update(User user, UpdateUserRequest request) {
+        user.setEmail(request.getEmail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+
+        repository.save(user);
+
+        return user;
+    }
+
+    private User from(CreateUserRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setFirstName(request.getFirstName());
@@ -92,30 +159,18 @@ public class UserServiceImpl implements IUserService {
         user.setDateOfBirth(request.getDateOfBirth());
         user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
 
-        UserRole role = roleService.findByName("USER");
-        user.setUserRole(role);
         return user;
     }
 
-    private User toUserUpdate(UpdateUserRequest request, Long id) {
-        User user = repository.getUserById(id);
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDateOfBirth(request.getDateOfBirth());
-        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+    private UserResponse from(User user) {
+        UserResponse userResponse = new UserResponse();
 
-        return user;
-    }
+        userResponse.setId(user.getId());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setDateOfBirth(user.getDateOfBirth());
 
-    private GetUserResponse toGetUserResponse(User user) {
-        GetUserResponse response = new GetUserResponse();
-        response.setId(user.getId());
-        response.setEmail(user.getEmail());
-        response.setFirstName(user.getFirstName());
-        response.setLastName(user.getLastName());
-        response.setDateOfBirth(user.getDateOfBirth());
-        response.setUserRole(user.getUserRole());
-        return response;
+        return userResponse;
     }
 }

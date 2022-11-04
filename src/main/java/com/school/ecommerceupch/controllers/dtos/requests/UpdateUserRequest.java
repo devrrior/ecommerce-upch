@@ -1,5 +1,6 @@
 package com.school.ecommerceupch.controllers.dtos.requests;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UpdateUserRequest {
     @Email
     private String email;
@@ -17,12 +19,15 @@ public class UpdateUserRequest {
     @NotNull
     private String firstName;
 
-    @NotBlank @NotNull
+    @NotBlank
+    @NotNull
     private String lastName;
 
-    @NotBlank @NotNull
+    @NotBlank
+    @NotNull
     private String password;
 
     @NotNull
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
 }

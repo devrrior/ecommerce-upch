@@ -42,4 +42,5 @@ public class AuthServiceImpl implements IAuthService {
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
+
 }

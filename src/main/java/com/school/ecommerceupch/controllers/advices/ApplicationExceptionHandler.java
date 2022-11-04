@@ -1,13 +1,13 @@
 package com.school.ecommerceupch.controllers.advices;
 
-import com.school.ecommerceupch.controllers.exceptions.UserAlreadyExistsException;
-import com.school.ecommerceupch.controllers.exceptions.UserNotFoundException;
-import com.school.ecommerceupch.controllers.exceptions.UserRoleAlreadyExistsException;
-import com.school.ecommerceupch.controllers.exceptions.UserRoleNotFoundException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.AccessDeniedException;
+import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
+import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -16,45 +16,68 @@ import java.util.Map;
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleInvalidArgument(MethodArgumentNotValidException ex) {
-        Map<String, String> errorMap = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMap.put(error.getField(), error.getDefaultMessage());
-        });
-        return errorMap;
+    @ExceptionHandler(UniqueConstraintViolationException.class)
+    public ResponseEntity<BaseResponse> handleUniqueConstraintViolationException(UniqueConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        String message = ex.getMessage();
+
+        errors.put("message", message);
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .data(errors)
+                .message("Operation failed")
+                .success(Boolean.FALSE)
+                .httpStatus(HttpStatus.BAD_REQUEST).build();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(UserNotFoundException.class)
-    public Map<String, String> handleBussinesException(UserNotFoundException ex) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("errorMessage", ex.getMessage());
-        return errorMap;
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<BaseResponse> handleInvalidFormatException(InvalidFormatException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+
+        errors.put("message", "Invalid format date");
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .data(errors)
+                .message("Operation failed")
+                .success(Boolean.FALSE)
+                .httpStatus(HttpStatus.BAD_REQUEST).build();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public Map<String, String> handleExistsException(UserAlreadyExistsException ex) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("errorMessage", ex.getMessage());
-        return errorMap;
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<BaseResponse> handleObjectNotFoundException(ObjectNotFoundException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        String message = ex.getMessage();
+
+        errors.put("message", message);
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .data(errors)
+                .message("Operation failed")
+                .success(Boolean.FALSE)
+                .httpStatus(HttpStatus.NOT_FOUND).build();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(UserRoleNotFoundException.class)
-    public Map<String, String> handleBussinesException(UserRoleNotFoundException ex) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("errorMessage", ex.getMessage());
-        return errorMap;
-    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, String> errors = new HashMap<>();
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(UserRoleAlreadyExistsException.class)
-    public Map<String, String> handleExistsException(UserRoleAlreadyExistsException ex) {
-        Map<java.lang.String, java.lang.String> errorMap = new HashMap<>();
-        errorMap.put("errorMessage", ex.getMessage());
-        return errorMap;
+        errors.put("message", "Access to the requested resource is forbidden");
+
+        BaseResponse baseResponse = BaseResponse.builder()
+                .data(errors)
+                .message("Operation failed")
+                .success(Boolean.FALSE)
+                .httpStatus(HttpStatus.FORBIDDEN).build();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 }
