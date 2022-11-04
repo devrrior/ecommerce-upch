@@ -1,8 +1,9 @@
 package com.school.ecommerceupch.services;
 
-import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
-import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.CreateRoleRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.UpdateRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.Role;
 import com.school.ecommerceupch.repositories.IRoleRepository;
 import com.school.ecommerceupch.services.interfaces.IRoleService;
@@ -18,7 +19,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public BaseResponse create(CreateUserRoleRequest request) {
+    public BaseResponse create(CreateRoleRequest request) {
         Role role = repository.save(from(request));
         return BaseResponse.builder()
                 .data(role)
@@ -41,7 +42,7 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public BaseResponse update(Long id, UpdateUserRoleRequest request) {
+    public BaseResponse update(Long id, UpdateRoleRequest request) {
         Role role = findOneAndEnsureExistById(id);
         role = update(role, request);
 
@@ -67,21 +68,21 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public Role findOneAndEnsureExistById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("User Role not found"));
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("User Role not found"));
     }
 
     @Override
     public Role findOneAndEnsureExistByName(String name) {
-        return repository.findByName(name).orElseThrow(() -> new RuntimeException("User Role not found"));
+        return repository.findByName(name).orElseThrow(() -> new ObjectNotFoundException("User Role not found"));
     }
 
-    private Role from(CreateUserRoleRequest request) {
+    private Role from(CreateRoleRequest request) {
         Role role = new Role();
         role.setName(request.getName());
         return role;
     }
 
-    private Role update(Role role, UpdateUserRoleRequest request) {
+    private Role update(Role role, UpdateRoleRequest request) {
         role.setName(request.getName());
         return repository.save(role);
     }

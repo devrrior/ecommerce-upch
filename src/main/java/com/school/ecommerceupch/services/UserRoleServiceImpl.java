@@ -7,9 +7,7 @@ import com.school.ecommerceupch.entities.pivots.UserRole;
 import com.school.ecommerceupch.entities.projections.RoleProjection;
 import com.school.ecommerceupch.entities.projections.UserProjection;
 import com.school.ecommerceupch.repositories.IUserRoleRepository;
-import com.school.ecommerceupch.services.interfaces.IRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
-import com.school.ecommerceupch.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +18,11 @@ import java.util.stream.Collectors;
 public class UserRoleServiceImpl implements IUserRoleService {
 
     private final IUserRoleRepository repository;
-    private final IUserService userService;
-    private final IRoleService roleService;
 
 
-    public UserRoleServiceImpl(IUserRoleRepository repository, IUserService userService, IRoleService roleService) {
+    public UserRoleServiceImpl(IUserRoleRepository repository) {
         this.repository = repository;
-        this.userService = userService;
-        this.roleService = roleService;
+
     }
 
     @Override
@@ -65,10 +60,12 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public UserRole create(Long userId, Long roleId) {
+    public UserRole create(User user, Role role) {
         UserRole userRole = new UserRole();
-        userRole.setRole(roleService.findOneAndEnsureExistById(roleId));
-        userRole.setUser(userService.findOneAndEnsureExistById(userId));
+        userRole.setRole(role);
+        userRole.setUser(user);
+
+        repository.save(userRole);
 
         return userRole;
     }
