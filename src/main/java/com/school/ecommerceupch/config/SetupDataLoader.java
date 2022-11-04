@@ -26,16 +26,12 @@ public class SetupDataLoader implements
         ApplicationListener<ContextRefreshedEvent> {
 
     private final IUserRepository userRepository;
-    boolean alreadySetup = false;
     private final RoleServiceImpl roleService;
-
     private final IRoleRepository roleRepository;
-
     private final IUserRoleService userRoleService;
-
     private final IOrderStatusRepository orderStatusRepository;
-
     private final PasswordEncoder passwordEncoder;
+    boolean alreadySetup = false;
 
     @Autowired
     public SetupDataLoader(IUserRepository userRepository, RoleServiceImpl roleService, IRoleRepository roleRepository, IUserRoleService userRoleService, IOrderStatusRepository orderStatusRepository, PasswordEncoder passwordEncoder) {
