@@ -3,6 +3,7 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateOrderStatusRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderStatusRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.OrderStatus;
 import com.school.ecommerceupch.repositories.IOrderStatusRepository;
 import com.school.ecommerceupch.services.interfaces.IOrderStatusService;
@@ -10,10 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class OrderStatusServiceImpl implements IOrderStatusService {
-    @Autowired
-    private IOrderStatusRepository repository;
+    private final IOrderStatusRepository repository;
+
+    public OrderStatusServiceImpl(IOrderStatusRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
     public BaseResponse create(CreateOrderStatusRequest request) {
         OrderStatus orderStatus = repository.save(from(request));
@@ -53,13 +60,17 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
 
     @Override
     public BaseResponse delete(Long id) {
+
+        if(!repository.existsById(id))
+            throw new ObjectNotFoundException("Order status not found");
+
         repository.deleteById(id);
 
         return BaseResponse.builder()
-                .data(null)
+                .data(Collections.EMPTY_LIST)
                 .message("Order deleted correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
+                .httpStatus(HttpStatus.NO_CONTENT)
                 .build();
     }
 
