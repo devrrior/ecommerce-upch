@@ -1,5 +1,6 @@
 package com.school.ecommerceupch.controllers.dtos.requests;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,5 +28,6 @@ public class UpdateUserRequest {
     private String password;
 
     @NotNull
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
 }
