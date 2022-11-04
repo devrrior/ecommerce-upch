@@ -1,7 +1,6 @@
 package com.school.ecommerceupch.entities.pivots;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.school.ecommerceupch.entities.Category;
 import com.school.ecommerceupch.entities.Product;
 import lombok.Getter;
