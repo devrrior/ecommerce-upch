@@ -20,6 +20,7 @@ public class ProductCategory {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference(value = "product")
     private Product product;
 
     @ManyToOne
