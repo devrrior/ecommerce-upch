@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class UpdateUserRoleRequest {
+public class CreateRoleRequest {
 
     @NotNull
     @NotBlank
