@@ -38,8 +38,14 @@ public class User {
     private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user")
+    @JsonBackReference
     private List<Product> products;
 
     @OneToMany(mappedBy = "user")
+    @JsonBackReference
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
+    private List<Order> orders;
 }

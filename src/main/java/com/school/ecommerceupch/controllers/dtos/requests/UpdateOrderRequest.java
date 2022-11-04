@@ -1,17 +1,12 @@
 package com.school.ecommerceupch.controllers.dtos.requests;
 
-import com.school.ecommerceupch.entities.OrderStatus;
-import com.school.ecommerceupch.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UpdateOrderRequest {
-    private Long Id;
 
-    private String status;
+    private Long orderStatusId;
 
-    private OrderStatus orderStatus;
-
-    private User user;
 }

@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -114,7 +115,7 @@ public class UserServiceImpl implements IUserService {
         repository.deleteById(id);
 
         return BaseResponse.builder()
-                .data(null)
+                .data(Collections.EMPTY_LIST)
                 .message("User deleted correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.NO_CONTENT)

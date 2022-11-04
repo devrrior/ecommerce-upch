@@ -1,5 +1,6 @@
 package com.school.ecommerceupch.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +19,12 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonManagedReference
     private Product product;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonManagedReference
     private Order order;
 
 }

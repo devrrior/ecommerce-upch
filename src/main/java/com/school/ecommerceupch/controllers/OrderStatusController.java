@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("order-status")
+@RequestMapping("api/order-status")
 @RestController
 public class OrderStatusController {
     @Autowired
     private IOrderStatusService service;
 
     @GetMapping("{id}")
-    public ResponseEntity<BaseResponse> get(@PathVariable Long id){
+    public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
         BaseResponse response = service.get(id);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
