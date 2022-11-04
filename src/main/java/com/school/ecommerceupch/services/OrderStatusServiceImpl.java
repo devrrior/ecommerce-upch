@@ -29,7 +29,7 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
                 .data(orderStatus)
                 .message("Order Status created correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK)
+                .httpStatus(HttpStatus.CREATED)
                 .build();
     }
 
