@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 public class UpdateOrderItemRequest {
 
-    private Long id;
     private Integer quantity;
     private Product product;
     private Order order;
