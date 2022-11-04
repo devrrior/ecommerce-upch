@@ -14,16 +14,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SetupDataLoader implements
         ApplicationListener<ContextRefreshedEvent> {
 
-    boolean alreadySetup = false;
-
     private final IUserRepository userRepository;
-
+    boolean alreadySetup = false;
     private RoleServiceImpl roleService;
 
     private IRoleRepository roleRepository;

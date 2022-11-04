@@ -4,12 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
