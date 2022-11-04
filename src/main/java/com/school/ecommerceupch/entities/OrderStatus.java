@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "orderStatuses")
+@Table(name = "orderStatus")
 @Getter
 @Setter
 public class OrderStatus {
