@@ -1,16 +1,16 @@
 package com.school.ecommerceupch.services.interfaces;
 
-import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRoleRequest;
-import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRoleRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.CreateRoleRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.UpdateRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.entities.Role;
 
 public interface IRoleService {
-    BaseResponse create(CreateUserRoleRequest request);
+    BaseResponse create(CreateRoleRequest request);
 
     BaseResponse get(Long id);
 
-    BaseResponse update(Long id, UpdateUserRoleRequest request);
+    BaseResponse update(Long id, UpdateRoleRequest request);
 
     BaseResponse delete(Long id);
 
