@@ -1,11 +1,16 @@
 package com.school.ecommerceupch.security;
 
+import com.school.ecommerceupch.entities.Address;
+import com.school.ecommerceupch.entities.Product;
 import com.school.ecommerceupch.entities.User;
+import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -47,7 +52,36 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public String getName() {
+    public Long getId() {
+        return user.getId();
+    }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
+    public String getFirstName() {
         return user.getFirstName();
     }
+
+    public String getLastName() {
+        return user.getLastName();
+    }
+
+    private Date getDateOfBirth() {
+        return user.getDateOfBirth();
+    }
+
+    private List<UserRole> getUserRoles() {
+        return user.getUserRoles();
+    }
+
+    private List<Product> getProducts() {
+        return user.getProducts();
+    }
+
+    private List<Address> getAddresses() {
+        return user.getAddresses();
+    }
+
 }
