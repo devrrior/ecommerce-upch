@@ -1,30 +1,39 @@
-package com.school.ecommerceupch.services.interfaces;
+package com.school.ecommerceupch.services;
 
 
 import com.school.ecommerceupch.controllers.dtos.requests.CreateOrderItemRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderItemRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.entities.Order;
 import com.school.ecommerceupch.entities.OrderItem;
+import com.school.ecommerceupch.entities.Product;
 import com.school.ecommerceupch.repositories.IOrderItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.school.ecommerceupch.services.interfaces.IOrderItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderItemServiceImpl  implements IOrderItemService {
+public class OrderItemServiceImpl implements IOrderItemService {
 
-    @Autowired
-    private IOrderItemRepository repository;
+    private final IOrderItemRepository repository;
+
+    public OrderItemServiceImpl(IOrderItemRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
     public BaseResponse create(CreateOrderItemRequest request) {
-        OrderItem orderItem = repository.save(from(request));
 
-            return BaseResponse .builder()
-                    .data(orderItem)
-                    .message("OrderItem saved correctly")
-                    .success(Boolean.TRUE)
-                    .httpStatus(HttpStatus.CREATED)
-                    .build();
+        Product product = new Product();
+        Order order = new Order();
+        OrderItem orderItem = repository.save(from(request, product, order));
+
+        return BaseResponse.builder()
+                .data(orderItem)
+                .message("OrderItem saved correctly")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.CREATED)
+                .build();
 
     }
 
@@ -65,20 +74,20 @@ public class OrderItemServiceImpl  implements IOrderItemService {
                 .build();
     }
 
-    private OrderItem findOneAndEnsureExistById(Long id){
+    private OrderItem findOneAndEnsureExistById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("The OrderItem does not exist"));
     }
 
-    private OrderItem from(CreateOrderItemRequest request){
-            OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(request.getQuantity());
-            orderItem.setProduct(request.getProduct());
-            orderItem.setProduct(request.getProduct());
+    private OrderItem from(CreateOrderItemRequest request, Product product, Order order) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setQuantity(request.getQuantity());
+        orderItem.setProduct(product);
+        orderItem.setOrder(order);
 
-            return orderItem;
+        return orderItem;
     }
 
-    private OrderItem update(OrderItem orderItem, UpdateOrderItemRequest request){
+    private OrderItem update(OrderItem orderItem, UpdateOrderItemRequest request) {
 
         orderItem.setQuantity(request.getQuantity());
         orderItem.setProduct(request.getProduct());
