@@ -7,8 +7,11 @@ import com.school.ecommerceupch.entities.Order;
 public interface IOrderService {
 
     BaseResponse create();
+
     BaseResponse get(Long id);
+
     BaseResponse update(Long id, UpdateOrderRequest request);
+
     BaseResponse delete(Long id);
 
 

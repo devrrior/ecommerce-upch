@@ -7,9 +7,14 @@ import com.school.ecommerceupch.entities.OrderStatus;
 
 public interface IOrderStatusService {
     BaseResponse create(CreateOrderStatusRequest request);
+
     BaseResponse get(Long id);
+
     BaseResponse update(Long Id, UpdateOrderStatusRequest request);
+
     BaseResponse delete(Long Id);
+
     OrderStatus findOneAndEnsureExistById(Long id);
+
     OrderStatus findOneAndEnsureExistByName(String name);
 }
