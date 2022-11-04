@@ -16,7 +16,7 @@ public class OrderStatusController {
     private IOrderStatusService service;
 
     @GetMapping("{id}")
-    public ResponseEntity<BaseResponse> get(@PathVariable Long id){
+    public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
         BaseResponse response = service.get(id);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }

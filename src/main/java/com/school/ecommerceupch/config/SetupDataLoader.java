@@ -27,15 +27,15 @@ public class SetupDataLoader implements
 
     private final IUserRepository userRepository;
     boolean alreadySetup = false;
-    private RoleServiceImpl roleService;
+    private final RoleServiceImpl roleService;
 
-    private IRoleRepository roleRepository;
+    private final IRoleRepository roleRepository;
 
-    private IUserRoleService userRoleService;
+    private final IUserRoleService userRoleService;
 
-    private IOrderStatusRepository orderStatusRepository;
+    private final IOrderStatusRepository orderStatusRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SetupDataLoader(IUserRepository userRepository, RoleServiceImpl roleService, IRoleRepository roleRepository, IUserRoleService userRoleService, IOrderStatusRepository orderStatusRepository, PasswordEncoder passwordEncoder) {
@@ -104,7 +104,7 @@ public class SetupDataLoader implements
     @Transactional
     void createOrderStatusIfNotFound(String name) {
         Optional<OrderStatus> optionalOrderStatus = orderStatusRepository.findByName(name);
-        if(optionalOrderStatus.isEmpty()) {
+        if (optionalOrderStatus.isEmpty()) {
             OrderStatus orderStatus = new OrderStatus();
             orderStatus.setName(name);
             orderStatusRepository.save(orderStatus);
