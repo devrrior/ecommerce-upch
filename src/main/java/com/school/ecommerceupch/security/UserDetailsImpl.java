@@ -52,36 +52,8 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public Long getId() {
-        return user.getId();
-    }
-
-    public String getEmail() {
-        return user.getEmail();
-    }
-
-    public String getFirstName() {
-        return user.getFirstName();
-    }
-
-    public String getLastName() {
-        return user.getLastName();
-    }
-
-    private Date getDateOfBirth() {
-        return user.getDateOfBirth();
-    }
-
-    private List<UserRole> getUserRoles() {
-        return user.getUserRoles();
-    }
-
-    private List<Product> getProducts() {
-        return user.getProducts();
-    }
-
-    private List<Address> getAddresses() {
-        return user.getAddresses();
+    public User getUser() {
+        return user;
     }
 
 }
