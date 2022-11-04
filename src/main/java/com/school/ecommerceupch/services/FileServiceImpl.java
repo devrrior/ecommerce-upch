@@ -24,9 +24,6 @@ import com.school.ecommerceupch.services.interfaces.IProductService;
 @Service
 public class FileServiceImpl implements IFileService {
 
-    @Autowired
-    private IProductService productService;
-
     private AmazonS3 s3client;
 
     private String ENDPOINT_URL = "";
@@ -38,7 +35,7 @@ public class FileServiceImpl implements IFileService {
     private String SECRET_KEY = "";
 
     @Override
-    public String upload(MultipartFile multipartFile, Long idProduct) {
+    public String upload(MultipartFile multipartFile) {
         String fileUrl= "";
 
         try {
@@ -55,8 +52,6 @@ public class FileServiceImpl implements IFileService {
         } catch (Exception e){
             e.printStackTrace();
         }
-
-        productService.updateProductImage(fileUrl, idProduct);
 
         return fileUrl;
     }
