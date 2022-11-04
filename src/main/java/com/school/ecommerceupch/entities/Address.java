@@ -2,13 +2,13 @@ package com.school.ecommerceupch.entities;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "addresses")
-@Getter @Setter
+@Getter
+@Setter
 public class Address {
 
     @Id
@@ -18,7 +18,7 @@ public class Address {
     @Column(length = 255)
     private String street;
 
-    @Column( length = 50)
+    @Column(length = 50)
     private String zipcode;
 
     @Column(length = 100)

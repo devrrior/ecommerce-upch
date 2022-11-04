@@ -1,5 +1,7 @@
 package com.school.ecommerceupch.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +30,12 @@ public class User {
     @Column(length = 40)
     private String lastName;
 
+    @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @ManyToOne
-    @JoinColumn(name = "userRole_id")
-    private UserRole userRole;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user")
     private List<Product> products;
