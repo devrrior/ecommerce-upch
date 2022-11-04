@@ -7,7 +7,6 @@ import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.OrderStatus;
 import com.school.ecommerceupch.repositories.IOrderStatusRepository;
 import com.school.ecommerceupch.services.interfaces.IOrderStatusService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +60,7 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
     @Override
     public BaseResponse delete(Long id) {
 
-        if(!repository.existsById(id))
+        if (!repository.existsById(id))
             throw new ObjectNotFoundException("Order status not found");
 
         repository.deleteById(id);
@@ -76,8 +75,14 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
 
     @Override
     public OrderStatus findOneAndEnsureExistById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Order Status not found"));
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Order Status not found"));
     }
+
+    @Override
+    public OrderStatus findOneAndEnsureExistByName(String name) {
+        return repository.findByName(name).orElseThrow(() -> new ObjectNotFoundException("Order Status not found"));
+    }
+
     private OrderStatus from(CreateOrderStatusRequest request) {
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setName(request.getName());
