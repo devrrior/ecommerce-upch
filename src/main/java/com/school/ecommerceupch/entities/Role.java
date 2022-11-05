@@ -1,7 +1,7 @@
 package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.school.ecommerceupch.entities.pivots.ProductCategory;
+import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,19 +9,18 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "categories")
-@Setter
+@Table(name = "roles")
 @Getter
-public class Category {
-
+@Setter
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 150, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE)
     @JsonBackReference
-    private List<ProductCategory> productCategories;
+    private List<UserRole> userRoles;
 }
