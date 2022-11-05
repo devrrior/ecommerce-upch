@@ -35,15 +35,22 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+
+
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/api/user/**").permitAll()
-                .antMatchers("/api/order-status/**").hasAnyRole("ADMIN")
-                .antMatchers("/api/order/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/order/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/category/**").permitAll()
+                .antMatchers("/api/category/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyRole("ADMIN")
+                .antMatchers("/api/order-item/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/product/**").permitAll()
+                .antMatchers("/api/product/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/api/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
+
+
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
