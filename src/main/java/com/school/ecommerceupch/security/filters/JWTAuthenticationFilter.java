@@ -20,11 +20,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService service;
 
+    @Autowired
+    private JWTUtils jwtUtils;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getJWTFromRequest(request);
-        if (StringUtils.hasText(token) && JWTUtils.isValidateToken(token)) {
-            String username = JWTUtils.getEmailFromJWT(token);
+        if (StringUtils.hasText(token) && jwtUtils.isValidateToken(token)) {
+            String username = jwtUtils.getEmailFromJWT(token);
 
             UserDetailsImpl userDetails = (UserDetailsImpl) service.loadUserByUsername(username);
 

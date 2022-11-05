@@ -18,8 +18,11 @@ public class AuthServiceImpl implements IAuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(AuthenticationManager authenticationManager) {
+    private final JWTUtils jwtUtils;
+
+    public AuthServiceImpl(AuthenticationManager authenticationManager, JWTUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class AuthServiceImpl implements IAuthService {
                 );
 
         String email = authentication.getName();
-        String token = JWTUtils.generateToken(email);
+        String token = jwtUtils.generateToken(email);
 
         Map<String, String> data = new HashMap<>();
         data.put("accessToken", token);
