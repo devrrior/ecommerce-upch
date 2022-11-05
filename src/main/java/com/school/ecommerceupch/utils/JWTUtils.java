@@ -5,16 +5,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class JWTUtils {
 
-    @Value("{ACCESS_TOKEN_SECRET}")
-    private static String ACCESS_TOKEN_SECRET;
-    private final static Long ACCESS_TOKEN_VALIDATION_SECONDS = 2_592_000L;
+    @Value("${ACCESS_TOKEN_SECRET}")
+    private String ACCESS_TOKEN_SECRET;
+    private final Long ACCESS_TOKEN_VALIDATION_SECONDS = 2_592_000L;
 
-    public static String generateToken(String email) {
+    public String generateToken(String email) {
         Long expirationTime = ACCESS_TOKEN_VALIDATION_SECONDS * 1_000;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
@@ -25,7 +27,7 @@ public class JWTUtils {
                 .compact();
     }
 
-    public static Boolean isValidateToken(String token) {
+    public Boolean isValidateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(ACCESS_TOKEN_SECRET.getBytes()).build().parseClaimsJws(token);
             return Boolean.TRUE;
@@ -34,7 +36,7 @@ public class JWTUtils {
         }
     }
 
-    public static String getEmailFromJWT(String token) {
+    public String getEmailFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(ACCESS_TOKEN_SECRET.getBytes()).build()
                 .parseClaimsJws(token).getBody();

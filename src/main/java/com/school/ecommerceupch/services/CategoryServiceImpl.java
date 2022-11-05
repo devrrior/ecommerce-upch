@@ -3,6 +3,7 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateCategoryRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateCategoryRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import com.school.ecommerceupch.entities.Category;
 import com.school.ecommerceupch.repositories.ICategoryRepository;
@@ -82,7 +83,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public Category findOneAndEnsureExists(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Category not found"));
     }
 
     private Category from(CreateCategoryRequest request) {
