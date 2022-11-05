@@ -109,7 +109,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public Address findOneAndEnsureExistById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("The address does not exist"));
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("The address does not exist"));
 
     }
 
