@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("file")
+@RequestMapping("api/file")
 public class FileController {
 
-    @Autowired
-    private IFileService service;
+    private final IFileService service;
+
+    public FileController(IFileService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public void upload(@RequestParam MultipartFile file){

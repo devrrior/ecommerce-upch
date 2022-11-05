@@ -9,11 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("api/product")
 public class ProductController {
 
-    @Autowired
-    private IProductService service;
+    private final IProductService service;
+
+    public ProductController(IProductService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<BaseResponse> list(){
@@ -21,7 +24,7 @@ public class ProductController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id){
         BaseResponse response = service.get(id);
         return new ResponseEntity<>(response, response.getHttpStatus());
@@ -33,14 +36,14 @@ public class ProductController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody UpdateProductRequest request){
         BaseResponse response = service.update(id, request);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    @DeleteMapping
-    public ResponseEntity<BaseResponse> delete(Long id){
+    @DeleteMapping("{id}")
+    public ResponseEntity<BaseResponse> delete(@PathVariable Long id){
         BaseResponse response = service.delete(id);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }

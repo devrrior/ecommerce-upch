@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("product-category")
+@RequestMapping("api/product-category")
 public class ProductCategoryController {
 
-    @Autowired
-    private IProductCategoryService service;
+    private final IProductCategoryService service;
+
+    public ProductCategoryController(IProductCategoryService service) {
+        this.service = service;
+    }
 
     @GetMapping("product/category/{categoryId}")
     public ResponseEntity<BaseResponse> listAllProductsByCategoryId(@PathVariable Long categoryId){
