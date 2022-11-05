@@ -17,6 +17,7 @@ import com.school.ecommerceupch.services.interfaces.IUserRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,8 @@ public class UserServiceImpl implements IUserService {
 
         UserDetailsImpl userDetails = getUserAuthenticated();
 
-        if (!userDetails.getUser().getId().equals(id))
+        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                || !userDetails.getUser().getId().equals(id))
             throw new AccessDeniedException();
 
         User user = findOneAndEnsureExistById(id);

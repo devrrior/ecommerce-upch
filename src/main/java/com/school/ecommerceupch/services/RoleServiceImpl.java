@@ -10,6 +10,8 @@ import com.school.ecommerceupch.services.interfaces.IRoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class RoleServiceImpl implements IRoleService {
     private final IRoleRepository repository;
@@ -59,7 +61,7 @@ public class RoleServiceImpl implements IRoleService {
         repository.deleteById(id);
 
         return BaseResponse.builder()
-                .data(null)
+                .data(Collections.EMPTY_LIST)
                 .message("User Role deleted correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.NO_CONTENT)

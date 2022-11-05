@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface IOrderStatusRepository extends JpaRepository<OrderStatus, Long> {
 
     Optional<OrderStatus> findByName(String name);
+
+    boolean existsByName(String name);
 }

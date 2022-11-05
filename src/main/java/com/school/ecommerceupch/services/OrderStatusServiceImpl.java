@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateOrderStatusReque
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderStatusRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
+import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import com.school.ecommerceupch.entities.OrderStatus;
 import com.school.ecommerceupch.repositories.IOrderStatusRepository;
 import com.school.ecommerceupch.services.interfaces.IOrderStatusService;
@@ -22,6 +23,10 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
 
     @Override
     public BaseResponse create(CreateOrderStatusRequest request) {
+
+        if (repository.existsByName(request.getName()))
+            throw new UniqueConstraintViolationException("Name is already in use");
+
         OrderStatus orderStatus = repository.save(from(request));
 
         return BaseResponse.builder()

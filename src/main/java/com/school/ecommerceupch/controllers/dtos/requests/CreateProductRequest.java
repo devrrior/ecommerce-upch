@@ -9,27 +9,34 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 public class CreateProductRequest {
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private String title;
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private String description;
 
     private MultipartFile file;
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private Integer stock;
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private Float price;
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private Long userId;
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private List<Long> productCategoriesIds;
 
     @NotBlank
