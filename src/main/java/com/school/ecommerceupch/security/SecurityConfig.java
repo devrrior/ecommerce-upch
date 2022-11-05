@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                 .antMatchers("/api/product/**").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.POST,"/api/user/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 

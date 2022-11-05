@@ -9,7 +9,6 @@ import com.school.ecommerceupch.entities.Product;
 import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.repositories.IProductRepository;
-import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -64,9 +63,8 @@ public class ProductServiceImpl implements IProductService {
     public BaseResponse create(CreateProductRequest request) {
         Product product = repository.save(from(request));
 
-        if (request.getProductCategoriesIds() != null) {
+        if (request.getProductCategoriesIds() != null)
             setProductCategoriesListToProduct(request.getProductCategoriesIds(), product);
-        }
 
         if (!request.getFile().isEmpty()) {
             String fileUrl = fileService.upload(request.getFile());
@@ -153,8 +151,6 @@ public class ProductServiceImpl implements IProductService {
         product.setStock(request.getStock());
         product.setPrice(request.getPrice());
 
-        User user = userService.findOneAndEnsureExistById(request.getUserId());
-        product.setUser(user);
 
         if (request.getProductCategoriesIds() != null) {
             setProductCategoriesListToProduct(request.getProductCategoriesIds(), product);

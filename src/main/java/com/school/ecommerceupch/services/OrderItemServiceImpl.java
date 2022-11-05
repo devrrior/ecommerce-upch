@@ -36,6 +36,11 @@ public class OrderItemServiceImpl implements IOrderItemService {
         this.orderService = orderService;
     }
 
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (UserDetailsImpl) authentication.getPrincipal();
+    }
+
     @Override
     public BaseResponse create(CreateOrderItemRequest request) {
 
@@ -124,10 +129,5 @@ public class OrderItemServiceImpl implements IOrderItemService {
         orderItem.setProduct(request.getProduct());
         repository.save(orderItem);
         return orderItem;
-    }
-
-    private static UserDetailsImpl getUserAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserDetailsImpl) authentication.getPrincipal();
     }
 }

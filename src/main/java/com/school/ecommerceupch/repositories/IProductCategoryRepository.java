@@ -2,9 +2,8 @@ package com.school.ecommerceupch.repositories;
 
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.entities.projections.CategoryProjection;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.school.ecommerceupch.entities.projections.ProductProjection;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

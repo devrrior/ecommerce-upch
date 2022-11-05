@@ -7,10 +7,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UpdateCategoryRequest {
 
-    @NotNull @NotBlank
+    @NotNull
+    @NotBlank
     private String name;
 
     @NotBlank

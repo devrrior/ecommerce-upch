@@ -26,6 +26,10 @@ public class AddressServiceImpl implements IAddressService {
         this.repository = repository;
     }
 
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (UserDetailsImpl) authentication.getPrincipal();
+    }
 
     @Override
     public BaseResponse create(CreateAddressRequest request) {
@@ -69,7 +73,7 @@ public class AddressServiceImpl implements IAddressService {
 
         Address address = findOneAndEnsureExistById(id);
 
-        if(!address.getUser().getId().equals(userAuthenticated.getUser().getId()))
+        if (!address.getUser().getId().equals(userAuthenticated.getUser().getId()))
             throw new AccessDeniedException();
 
         address = update(address, request);
@@ -87,7 +91,7 @@ public class AddressServiceImpl implements IAddressService {
     public BaseResponse delete(Long id) {
         UserDetailsImpl userAuthenticated = getUserAuthenticated();
 
-        if(!repository.existsById(id))
+        if (!repository.existsById(id))
             throw new ObjectNotFoundException("Address not found");
 
         if (!userAuthenticated.getUser().getId().equals(id))
@@ -107,11 +111,6 @@ public class AddressServiceImpl implements IAddressService {
     public Address findOneAndEnsureExistById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("The address does not exist"));
 
-    }
-
-    private static UserDetailsImpl getUserAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return  (UserDetailsImpl) authentication.getPrincipal();
     }
 
     private Address from(CreateAddressRequest request, User user) {

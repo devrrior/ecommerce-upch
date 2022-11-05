@@ -1,6 +1,5 @@
 package com.school.ecommerceupch.controllers.dtos.requests;
 
-import com.school.ecommerceupch.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 

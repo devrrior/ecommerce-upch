@@ -80,14 +80,14 @@ public class CategoryServiceImpl implements ICategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
-    private Category from(CreateCategoryRequest request){
+    private Category from(CreateCategoryRequest request) {
         Category category = new Category();
         category.setName(request.getName());
 
         return category;
     }
 
-    private Category update(Category category, UpdateCategoryRequest request){
+    private Category update(Category category, UpdateCategoryRequest request) {
         category.setName(request.getName());
         return category;
     }

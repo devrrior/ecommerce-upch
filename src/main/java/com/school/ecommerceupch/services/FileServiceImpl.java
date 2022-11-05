@@ -10,7 +10,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.school.ecommerceupch.services.interfaces.IFileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,24 +18,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.school.ecommerceupch.services.interfaces.IProductService;
-
 @Service
 public class FileServiceImpl implements IFileService {
 
     private AmazonS3 s3client;
 
-    private String ENDPOINT_URL = "";
+    private final String ENDPOINT_URL = "";
 
-    private String BUCKET_NAME = "";
+    private final String BUCKET_NAME = "";
 
-    private String ACCESS_KEY = "";
+    private final String ACCESS_KEY = "";
 
-    private String SECRET_KEY = "";
+    private final String SECRET_KEY = "";
 
     @Override
     public String upload(MultipartFile multipartFile) {
-        String fileUrl= "";
+        String fileUrl = "";
 
         try {
             File file = convertMultipartFileToFile(multipartFile);
@@ -49,7 +46,7 @@ public class FileServiceImpl implements IFileService {
 
             file.delete();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -57,7 +54,7 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    public void delete(String filename){
+    public void delete(String filename) {
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(BUCKET_NAME, filename);
         s3client.deleteObject(deleteObjectRequest);
     }
@@ -70,11 +67,11 @@ public class FileServiceImpl implements IFileService {
         return convFile;
     }
 
-    private String generateFileName(MultipartFile multipartFile){
+    private String generateFileName(MultipartFile multipartFile) {
         return multipartFile.getName().replace(" ", "_");
     }
 
-    private void uploadFileToS3Bucket(String fileName, File file){
+    private void uploadFileToS3Bucket(String fileName, File file) {
         PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, fileName, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead);
         s3client.putObject(putObjectRequest);

@@ -57,7 +57,7 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
                 .httpStatus(HttpStatus.FOUND).build();
     }
 
-    private Product from(ProductProjection productProjection){
+    private Product from(ProductProjection productProjection) {
         Product product = new Product();
         product.setId(productProjection.getId());
         product.setTitle(productProjection.getTitle());
@@ -71,7 +71,7 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
         return product;
     }
 
-    private Category toCategoryFrom(CategoryProjection categoryProjection){
+    private Category toCategoryFrom(CategoryProjection categoryProjection) {
         Category category = new Category();
         category.setId(categoryProjection.getId());
         category.setName(categoryProjection.getName());
