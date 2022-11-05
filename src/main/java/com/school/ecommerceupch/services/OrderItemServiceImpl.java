@@ -4,12 +4,19 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateOrderItemRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderItemRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.AccessDeniedException;
+import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.Order;
 import com.school.ecommerceupch.entities.OrderItem;
 import com.school.ecommerceupch.entities.Product;
 import com.school.ecommerceupch.repositories.IOrderItemRepository;
+import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.IOrderItemService;
+import com.school.ecommerceupch.services.interfaces.IOrderService;
+import com.school.ecommerceupch.services.interfaces.IProductService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,15 +24,21 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
     private final IOrderItemRepository repository;
 
-    public OrderItemServiceImpl(IOrderItemRepository repository) {
+    private final IProductService productService;
+
+    private final IOrderService orderService;
+
+    public OrderItemServiceImpl(IOrderItemRepository repository, IProductService productService, IOrderService orderService) {
         this.repository = repository;
+        this.productService = productService;
+        this.orderService = orderService;
     }
 
     @Override
     public BaseResponse create(CreateOrderItemRequest request) {
 
-        Product product = new Product();
-        Order order = new Order();
+        Product product = productService.findOneAndEnsureExists(request.getProductId());
+        Order order = orderService.findOneAndEnsureExistById(request.getOrderId());
         OrderItem orderItem = repository.save(from(request, product, order));
 
         return BaseResponse.builder()
@@ -52,7 +65,14 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
     @Override
     public BaseResponse update(Long id, UpdateOrderItemRequest request) {
+
+        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+
         OrderItem orderItem = findOneAndEnsureExistById(id);
+
+        if (!orderItem.getOrder().getUser().getId().equals(userAuthenticated.getUser().getId()))
+            throw new AccessDeniedException();
+
         orderItem = update(orderItem, request);
         return BaseResponse.builder()
                 .data(orderItem)
@@ -65,7 +85,15 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public BaseResponse delete(Long id) {
 
+        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+
+        OrderItem orderItem = findOneAndEnsureExistById(id);
+
+        if (!orderItem.getOrder().getUser().getId().equals(userAuthenticated.getUser().getId()))
+            throw new AccessDeniedException();
+
         repository.deleteById(id);
+
         return BaseResponse.builder()
                 .data(null)
                 .message("OrderItem deleted correctly ")
@@ -75,7 +103,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
     }
 
     private OrderItem findOneAndEnsureExistById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("The OrderItem does not exist"));
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("The OrderItem does not exist"));
     }
 
     private OrderItem from(CreateOrderItemRequest request, Product product, Order order) {
@@ -94,5 +122,10 @@ public class OrderItemServiceImpl implements IOrderItemService {
         orderItem.setProduct(request.getProduct());
         repository.save(orderItem);
         return orderItem;
+    }
+
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (UserDetailsImpl) authentication.getPrincipal();
     }
 }
