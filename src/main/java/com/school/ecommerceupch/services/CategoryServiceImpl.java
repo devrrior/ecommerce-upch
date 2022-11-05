@@ -3,6 +3,7 @@ package com.school.ecommerceupch.services;
 import com.school.ecommerceupch.controllers.dtos.requests.CreateCategoryRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateCategoryRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
+import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import com.school.ecommerceupch.entities.Category;
 import com.school.ecommerceupch.repositories.ICategoryRepository;
 import com.school.ecommerceupch.services.interfaces.ICategoryService;
@@ -42,6 +43,10 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public BaseResponse create(CreateCategoryRequest request) {
+
+        if(repository.existsByName(request.getName()))
+            throw new UniqueConstraintViolationException("Name is already in use");
+
         Category category = from(request);
         return BaseResponse.builder()
                 .data(repository.save(category))
