@@ -19,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class OrderItemServiceImpl implements IOrderItemService {
 
@@ -95,7 +97,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
         repository.deleteById(id);
 
         return BaseResponse.builder()
-                .data(null)
+                .data(Collections.EMPTY_LIST)
                 .message("OrderItem deleted correctly ")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.NO_CONTENT)
