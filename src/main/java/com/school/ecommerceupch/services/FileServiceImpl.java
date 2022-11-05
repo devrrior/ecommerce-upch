@@ -21,15 +21,11 @@ import java.io.IOException;
 @Service
 public class FileServiceImpl implements IFileService {
 
-    private AmazonS3 s3client;
-
     private final String ENDPOINT_URL = "";
-
     private final String BUCKET_NAME = "";
-
     private final String ACCESS_KEY = "";
-
     private final String SECRET_KEY = "";
+    private AmazonS3 s3client;
 
     @Override
     public String upload(MultipartFile multipartFile) {

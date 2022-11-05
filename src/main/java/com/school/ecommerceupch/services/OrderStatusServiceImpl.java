@@ -24,7 +24,7 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
     @Override
     public BaseResponse create(CreateOrderStatusRequest request) {
 
-        if(repository.existsByName(request.getName()))
+        if (repository.existsByName(request.getName()))
             throw new UniqueConstraintViolationException("Name is already in use");
 
         OrderStatus orderStatus = repository.save(from(request));

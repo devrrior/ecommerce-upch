@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public BaseResponse create(CreateCategoryRequest request) {
 
-        if(repository.existsByName(request.getName()))
+        if (repository.existsByName(request.getName()))
             throw new UniqueConstraintViolationException("Name is already in use");
 
         Category category = from(request);
