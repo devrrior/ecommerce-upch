@@ -1,6 +1,5 @@
 package com.school.ecommerceupch.controllers.dtos.requests;
 
-import com.school.ecommerceupch.entities.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,11 +34,6 @@ public class CreateProductRequest {
     @NotBlank
     private Long userId;
 
-    @NotNull
-    @NotBlank
-    private List<Long> productCategoriesIds;
-
-    @NotBlank
-    private List<OrderItem> orderItems;
+    private List<Long> categoryIds;
 
 }

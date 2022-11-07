@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 .data(categories)
                 .message("Categories found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 .data(category)
                 .message("Category found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override

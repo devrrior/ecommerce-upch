@@ -1,6 +1,5 @@
 package com.school.ecommerceupch.controllers.dtos.requests;
 
-import com.school.ecommerceupch.entities.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,11 +34,7 @@ public class UpdateProductRequest {
     @NotBlank
     private Long userId;
 
-    @NotNull
-    @NotBlank
-    private List<Long> productCategoriesIds;
+    private List<Long> categoryIds;
 
-    @NotBlank
-    private List<OrderItem> orderItems;
 
 }
