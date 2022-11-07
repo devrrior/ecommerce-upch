@@ -63,8 +63,8 @@ public class ProductServiceImpl implements IProductService {
     public BaseResponse create(CreateProductRequest request) {
         Product product = repository.save(from(request));
 
-        if (request.getProductCategoriesIds() != null)
-            setProductCategoriesListToProduct(request.getProductCategoriesIds(), product);
+        if (request.getCategoryIds() != null)
+            setProductCategoriesListToProduct(request.getCategoryIds(), product);
 
         if (!request.getFile().isEmpty()) {
             String fileUrl = fileService.upload(request.getFile());
@@ -126,8 +126,6 @@ public class ProductServiceImpl implements IProductService {
         User user = userService.findOneAndEnsureExistById(request.getUserId());
         product.setUser(user);
 
-        product.setOrderItems(request.getOrderItems());
-
         return product;
     }
 
@@ -152,8 +150,8 @@ public class ProductServiceImpl implements IProductService {
         product.setPrice(request.getPrice());
 
 
-        if (request.getProductCategoriesIds() != null) {
-            setProductCategoriesListToProduct(request.getProductCategoriesIds(), product);
+        if (request.getCategoryIds() != null) {
+            setProductCategoriesListToProduct(request.getCategoryIds(), product);
         }
 
         if (!request.getFile().isEmpty()) {
