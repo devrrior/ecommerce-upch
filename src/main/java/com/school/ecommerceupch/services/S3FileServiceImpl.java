@@ -55,8 +55,8 @@ public class S3FileServiceImpl implements IFileService {
     }
 
     @Override
-    public void delete(String filename) {
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(BUCKET_NAME, filename);
+    public void delete(String imageUrl) {
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(BUCKET_NAME, imageUrl);
         s3client.deleteObject(deleteObjectRequest);
     }
 

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class UpdateCategoryRequest {
 
-    @NotNull
     @NotBlank
     private String name;
 

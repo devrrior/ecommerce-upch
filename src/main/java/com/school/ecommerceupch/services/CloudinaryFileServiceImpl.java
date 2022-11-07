@@ -61,11 +61,9 @@ public class CloudinaryFileServiceImpl implements IFileService {
 
         String filename = getFilenameFromUrl(imageUrl);
         String publicId = "ecommerce-upch/product-images/" + fileUtils.removeExtensionFromFilename(filename);
-        System.out.println(publicId);
 
         try {
             Map response = cloudinary.uploader().destroy(publicId, cloudinaryConfig);
-            System.out.println(response);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

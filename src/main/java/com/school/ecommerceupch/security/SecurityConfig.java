@@ -15,6 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +37,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
+                .cors()
+                .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -41,7 +49,6 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/category/**").permitAll()
                 .antMatchers("/api/category/**").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyRole("ADMIN")
                 .antMatchers("/api/order-item/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/product/**").permitAll()
