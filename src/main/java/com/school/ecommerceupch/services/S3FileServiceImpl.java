@@ -10,16 +10,15 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.school.ecommerceupch.services.interfaces.IFileService;
+import com.school.ecommerceupch.utils.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
-@Service
-public class FileServiceImpl implements IFileService {
+@Service("s3")
+public class S3FileServiceImpl implements IFileService {
 
     private final String ENDPOINT_URL = "";
     private final String BUCKET_NAME = "";
@@ -27,14 +26,20 @@ public class FileServiceImpl implements IFileService {
     private final String SECRET_KEY = "";
     private AmazonS3 s3client;
 
+    private final FileUtils fileUtils;
+
+    public S3FileServiceImpl(FileUtils fileUtils) {
+        this.fileUtils = fileUtils;
+    }
+
     @Override
     public String upload(MultipartFile multipartFile) {
         String fileUrl = "";
 
         try {
-            File file = convertMultipartFileToFile(multipartFile);
+            File file = fileUtils.convertMultipartFileToFile(multipartFile);
 
-            String fileName = generateFileName(multipartFile);
+            String fileName = fileUtils.generateFileName(multipartFile);
 
             fileUrl = "https://" + BUCKET_NAME + "." + ENDPOINT_URL + fileName;
 
@@ -53,18 +58,6 @@ public class FileServiceImpl implements IFileService {
     public void delete(String filename) {
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(BUCKET_NAME, filename);
         s3client.deleteObject(deleteObjectRequest);
-    }
-
-    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File convFile = new File(multipartFile.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(multipartFile.getBytes());
-        fos.close();
-        return convFile;
-    }
-
-    private String generateFileName(MultipartFile multipartFile) {
-        return multipartFile.getName().replace(" ", "_");
     }
 
     private void uploadFileToS3Bucket(String fileName, File file) {
