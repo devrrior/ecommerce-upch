@@ -10,6 +10,7 @@ import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.repositories.IProductRepository;
 import com.school.ecommerceupch.services.interfaces.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,9 @@ public class ProductServiceImpl implements IProductService {
 
     private final IProductCategoryService productCategoryService;
 
-    public ProductServiceImpl(IProductRepository repository, IUserService userService, ICategoryService categoryService, IFileService fileService, IProductCategoryService productCategoryService) {
+    public ProductServiceImpl(IProductRepository repository, IUserService userService, ICategoryService categoryService,
+                              @Qualifier("cloudinary") IFileService fileService,
+                              IProductCategoryService productCategoryService) {
         this.repository = repository;
         this.userService = userService;
         this.categoryService = categoryService;
