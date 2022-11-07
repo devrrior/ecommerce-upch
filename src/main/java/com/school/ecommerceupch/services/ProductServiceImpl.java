@@ -45,7 +45,7 @@ public class ProductServiceImpl implements IProductService {
                 .data(product)
                 .message("Product found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ProductServiceImpl implements IProductService {
                 .data(products)
                 .message("Products found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override

@@ -1,3 +1,3 @@
-FROM amazoncorretto:11-alpine3.13-jdk
+FROM amazoncorretto:11.0.17
 ADD target/app.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
