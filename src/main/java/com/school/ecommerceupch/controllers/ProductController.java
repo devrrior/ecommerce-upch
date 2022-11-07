@@ -7,6 +7,8 @@ import com.school.ecommerceupch.services.interfaces.IProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("api/product")
 public class ProductController {
@@ -36,7 +38,7 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody UpdateProductRequest request) {
+    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @ModelAttribute UpdateProductRequest request) {
         BaseResponse response = service.update(id, request);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
