@@ -7,6 +7,8 @@ import com.school.ecommerceupch.services.interfaces.ICategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("api/category")
 public class CategoryController {
@@ -36,7 +38,7 @@ public class CategoryController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody UpdateCategoryRequest request) {
+    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
         BaseResponse response = service.update(id, request);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
