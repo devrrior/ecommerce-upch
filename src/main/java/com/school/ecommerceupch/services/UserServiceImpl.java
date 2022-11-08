@@ -15,6 +15,7 @@ import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.IRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,15 +29,15 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements IUserService {
-    private final IUserRepository repository;
-    private final IRoleService roleService;
-    private final IUserRoleService userRoleService;
 
-    public UserServiceImpl(IUserRepository repository, IRoleService roleService, IUserRoleService userRoleService) {
-        this.repository = repository;
-        this.roleService = roleService;
-        this.userRoleService = userRoleService;
-    }
+    @Autowired
+    private IUserRepository repository;
+
+    @Autowired
+    private IRoleService roleService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
 
     private static UserDetailsImpl getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -6,11 +6,13 @@ import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.Category;
 import com.school.ecommerceupch.entities.Product;
+import com.school.ecommerceupch.entities.ProductStatus;
 import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.repositories.IProductRepository;
 import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -24,22 +26,21 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-    private final IProductRepository repository;
+    @Autowired
+    private IProductRepository repository;
 
-    private final ICategoryService categoryService;
+    @Autowired
+    private ICategoryService categoryService;
 
-    private final IFileService fileService;
+    @Autowired
+    @Qualifier("cloudinary")
+    private IFileService fileService;
 
-    private final IProductCategoryService productCategoryService;
+    @Autowired
+    private IProductCategoryService productCategoryService;
 
-    public ProductServiceImpl(IProductRepository repository, ICategoryService categoryService,
-                              @Qualifier("cloudinary") IFileService fileService,
-                              IProductCategoryService productCategoryService) {
-        this.repository = repository;
-        this.categoryService = categoryService;
-        this.fileService = fileService;
-        this.productCategoryService = productCategoryService;
-    }
+    @Autowired
+    private IProductStatusService productStatusService;
 
     @Override
     public BaseResponse get(Long id) {
@@ -67,7 +68,9 @@ public class ProductServiceImpl implements IProductService {
 
         UserDetailsImpl userAuthenticated = getUserAuthenticated();
 
-        Product product = repository.save(from(request, userAuthenticated.getUser()));
+        ProductStatus productStatus = productStatusService.findOneAndEnsureExistById(request.getProductStatusId());
+
+        Product product = repository.save(from(request, userAuthenticated.getUser(), productStatus));
 
         if (request.getCategoryIds() != null)
             setProductCategoriesListToProduct(request.getCategoryIds(), product);
@@ -87,24 +90,13 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public BaseResponse update(Long id, UpdateProductRequest request) {
 
+        ProductStatus productStatus = productStatusService.findOneAndEnsureExistById(request.getProductStatusId());
         Product product = findOneAndEnsureExists(id);
-        product = update(product, request);
+        product = update(product, request, productStatus);
 
         return BaseResponse.builder()
                 .data(product)
                 .message("Product updated correctly")
-                .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.OK).build();
-    }
-
-    @Override
-    public BaseResponse delete(Long id) {
-        Product product = findOneAndEnsureExists(id);
-        repository.delete(product);
-
-        return BaseResponse.builder()
-                .data(Collections.EMPTY_LIST)
-                .message("Product deleted correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK).build();
     }
@@ -121,13 +113,14 @@ public class ProductServiceImpl implements IProductService {
                 .orElseThrow(() -> new ObjectNotFoundException("Product not found"));
     }
 
-    private Product from(CreateProductRequest request, User user) {
+    private Product from(CreateProductRequest request, User user, ProductStatus productStatus) {
         Product product = new Product();
         product.setTitle(request.getTitle());
         product.setDescription(request.getDescription());
         product.setStock(request.getStock());
         product.setPrice(request.getPrice());
         product.setUser(user);
+        product.setProductStatus(productStatus);
 
         return product;
     }
@@ -146,11 +139,12 @@ public class ProductServiceImpl implements IProductService {
         repository.save(product);
     }
 
-    private Product update(Product product, UpdateProductRequest request) {
+    private Product update(Product product, UpdateProductRequest request, ProductStatus productStatus) {
         product.setTitle(request.getTitle());
         product.setDescription(request.getDescription());
         product.setStock(request.getStock());
         product.setPrice(request.getPrice());
+        product.setProductStatus(productStatus);
 
 
         if (request.getCategoryIds() != null) {

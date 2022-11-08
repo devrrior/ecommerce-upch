@@ -40,7 +40,7 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
                 .data(products)
                 .message("Products found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
                 .data(categories)
                 .message("Categories found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     private Product from(ProductProjection productProjection) {

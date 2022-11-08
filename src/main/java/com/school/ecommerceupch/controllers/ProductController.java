@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateProductRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateProductRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,11 +15,8 @@ import javax.validation.Valid;
 @RequestMapping("api/product")
 public class ProductController {
 
-    private final IProductService service;
-
-    public ProductController(IProductService service) {
-        this.service = service;
-    }
+    @Autowired
+    private IProductService service;
 
     @GetMapping
     public ResponseEntity<BaseResponse> list() {
@@ -44,9 +42,4 @@ public class ProductController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
-        BaseResponse response = service.delete(id);
-        return new ResponseEntity<>(response, response.getHttpStatus());
-    }
 }

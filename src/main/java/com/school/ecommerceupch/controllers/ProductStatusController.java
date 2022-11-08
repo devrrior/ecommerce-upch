@@ -1,19 +1,21 @@
 package com.school.ecommerceupch.controllers;
 
-import com.school.ecommerceupch.controllers.dtos.requests.CreateOrderItemRequest;
-import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderItemRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.CreateProductStatusRequest;
+import com.school.ecommerceupch.controllers.dtos.requests.UpdateProductStatusRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
-import com.school.ecommerceupch.services.interfaces.IOrderItemService;
+import com.school.ecommerceupch.services.interfaces.IProductStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
-@RequestMapping("api/order-item")
-public class OrderItemController {
+@RequestMapping("api/product-status")
+public class ProductStatusController {
 
     @Autowired
-    private IOrderItemService service;
+    private IProductStatusService service;
 
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
@@ -23,14 +25,14 @@ public class OrderItemController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody CreateOrderItemRequest request) {
+    public ResponseEntity<BaseResponse> create(@RequestBody @Valid CreateProductStatusRequest request) {
         BaseResponse baseResponse = service.create(request);
 
         return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody UpdateOrderItemRequest request) {
+    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateProductStatusRequest request) {
         BaseResponse baseResponse = service.update(id, request);
 
         return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());

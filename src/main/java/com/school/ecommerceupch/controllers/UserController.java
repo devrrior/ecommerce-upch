@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateUserRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +13,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("api/user")
 public class UserController {
-    private final IUserService service;
 
-    public UserController(IUserService service) {
-        this.service = service;
-    }
+    @Autowired
+    private IUserService service;
 
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id) {

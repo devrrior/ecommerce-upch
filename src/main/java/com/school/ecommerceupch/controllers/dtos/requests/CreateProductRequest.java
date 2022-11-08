@@ -31,6 +31,9 @@ public class CreateProductRequest {
     private Float price;
 
     @NotNull
+    private Long productStatusId;
+
+    @NotNull
     private List<@NotNull Long> categoryIds;
 
 }

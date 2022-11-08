@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                 .antMatchers("/api/product/**").hasAnyRole("ADMIN")
+                .antMatchers("/api/product-status/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()

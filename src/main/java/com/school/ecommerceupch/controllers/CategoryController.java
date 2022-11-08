@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateCategoryRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateCategoryRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.ICategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +14,8 @@ import javax.validation.Valid;
 @RequestMapping("api/category")
 public class CategoryController {
 
-    private final ICategoryService service;
-
-    public CategoryController(ICategoryService service) {
-        this.service = service;
-    }
+    @Autowired
+    private ICategoryService service;
 
     @GetMapping
     public ResponseEntity<BaseResponse> list() {
