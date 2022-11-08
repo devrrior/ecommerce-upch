@@ -21,7 +21,7 @@ public class Category {
     @Column(length = 100, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<ProductCategory> productCategories;
 }

@@ -20,7 +20,7 @@ public class Role {
     @Column(length = 150, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<UserRole> userRoles;
 }

@@ -35,11 +35,11 @@ public class Product {
     @JsonManagedReference
     private User user;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<ProductCategory> productCategories;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<OrderItem> orderItems;
 

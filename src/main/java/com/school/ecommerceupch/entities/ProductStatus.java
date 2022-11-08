@@ -20,7 +20,7 @@ public class ProductStatus {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "productStatus")
+    @OneToMany(mappedBy = "productStatus", cascade = CascadeType.ALL)
     @JsonBackReference
     List<Product> products;
 }
