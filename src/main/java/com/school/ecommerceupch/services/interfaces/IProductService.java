@@ -15,8 +15,6 @@ public interface IProductService {
 
     BaseResponse update(Long id, UpdateProductRequest request);
 
-    BaseResponse delete(Long id);
-
     void updateProductImage(String productImageUrl, Long idProduct);
 
     Product findOneAndEnsureExists(Long id);
