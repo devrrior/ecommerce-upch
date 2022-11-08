@@ -43,4 +43,9 @@ public class Product {
     @JsonBackReference
     private List<OrderItem> orderItems;
 
+    @ManyToOne
+    @JoinColumn(name = "productStatus_id")
+    @JsonManagedReference
+    private ProductStatus productStatus;
+
 }
