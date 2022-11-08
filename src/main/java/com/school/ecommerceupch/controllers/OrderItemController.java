@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateOrderItemRequest
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderItemRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IOrderItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/order-item")
 public class OrderItemController {
 
-    private final IOrderItemService service;
-
-    public OrderItemController(IOrderItemService service) {
-        this.service = service;
-    }
+    @Autowired
+    private IOrderItemService service;
 
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
