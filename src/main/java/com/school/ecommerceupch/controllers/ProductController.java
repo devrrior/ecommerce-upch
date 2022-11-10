@@ -7,7 +7,6 @@ import com.school.ecommerceupch.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -31,13 +30,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse> create(@ModelAttribute @Valid CreateProductRequest request) {
+    public ResponseEntity<BaseResponse> create(@RequestBody @Valid CreateProductRequest request) {
         BaseResponse response = service.create(request);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @ModelAttribute @Valid UpdateProductRequest request) {
+    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest request) {
         BaseResponse response = service.update(id, request);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
