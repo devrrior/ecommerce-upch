@@ -11,16 +11,17 @@ import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.repositories.IProductRepository;
 import com.school.ecommerceupch.security.UserDetailsImpl;
-import com.school.ecommerceupch.services.interfaces.*;
+import com.school.ecommerceupch.services.interfaces.ICategoryService;
+import com.school.ecommerceupch.services.interfaces.IProductCategoryService;
+import com.school.ecommerceupch.services.interfaces.IProductService;
+import com.school.ecommerceupch.services.interfaces.IProductStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,14 +34,15 @@ public class ProductServiceImpl implements IProductService {
     private ICategoryService categoryService;
 
     @Autowired
-    @Qualifier("cloudinary")
-    private IFileService fileService;
-
-    @Autowired
     private IProductCategoryService productCategoryService;
 
     @Autowired
     private IProductStatusService productStatusService;
+
+    private static UserDetailsImpl getUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (UserDetailsImpl) authentication.getPrincipal();
+    }
 
     @Override
     public BaseResponse get(Long id) {
@@ -66,19 +68,12 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public BaseResponse create(CreateProductRequest request) {
 
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+        User user = getUserAuthenticated().getUser();
 
-        ProductStatus productStatus = productStatusService.findOneAndEnsureExistById(request.getProductStatusId());
-
-        Product product = repository.save(from(request, userAuthenticated.getUser(), productStatus));
+        Product product = repository.save(from(request, user));
 
         if (request.getCategoryIds() != null)
             setProductCategoriesListToProduct(request.getCategoryIds(), product);
-
-        if (!request.getImage().isEmpty()) {
-            String fileUrl = fileService.upload(request.getImage());
-            updateProductImage(fileUrl, product.getId());
-        }
 
         return BaseResponse.builder()
                 .data(product)
@@ -90,9 +85,9 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public BaseResponse update(Long id, UpdateProductRequest request) {
 
-        ProductStatus productStatus = productStatusService.findOneAndEnsureExistById(request.getProductStatusId());
         Product product = findOneAndEnsureExists(id);
-        product = update(product, request, productStatus);
+
+        product = update(product, request);
 
         return BaseResponse.builder()
                 .data(product)
@@ -101,25 +96,21 @@ public class ProductServiceImpl implements IProductService {
                 .httpStatus(HttpStatus.OK).build();
     }
 
-    @Override
-    public void updateProductImage(String productImageUrl, Long idProduct) {
-        Product product = findOneAndEnsureExists(idProduct);
-        product.setImageUrl(productImageUrl);
-        repository.save(product);
-    }
-
     public Product findOneAndEnsureExists(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Product not found"));
     }
 
-    private Product from(CreateProductRequest request, User user, ProductStatus productStatus) {
+    private Product from(CreateProductRequest request, User user) {
         Product product = new Product();
         product.setTitle(request.getTitle());
         product.setDescription(request.getDescription());
         product.setStock(request.getStock());
         product.setPrice(request.getPrice());
         product.setUser(user);
+        product.setImageUrl(request.getImageUrl());
+
+        ProductStatus productStatus = productStatusService.findOneAndEnsureExistById(request.getProductStatusId());
         product.setProductStatus(productStatus);
 
         return product;
@@ -139,11 +130,14 @@ public class ProductServiceImpl implements IProductService {
         repository.save(product);
     }
 
-    private Product update(Product product, UpdateProductRequest request, ProductStatus productStatus) {
+    private Product update(Product product, UpdateProductRequest request) {
         product.setTitle(request.getTitle());
         product.setDescription(request.getDescription());
         product.setStock(request.getStock());
         product.setPrice(request.getPrice());
+        product.setImageUrl(request.getImageUrl());
+
+        ProductStatus productStatus = productStatusService.findOneAndEnsureExistById(request.getProductStatusId());
         product.setProductStatus(productStatus);
 
 
@@ -151,20 +145,9 @@ public class ProductServiceImpl implements IProductService {
             setProductCategoriesListToProduct(request.getCategoryIds(), product);
         }
 
-        if (!request.getImage().isEmpty()) {
-            fileService.delete(product.getImageUrl());
-            String newImageUrl = fileService.upload(request.getImage());
-            product.setImageUrl(newImageUrl);
-        }
-
         repository.save(product);
 
         return product;
-    }
-
-    private static UserDetailsImpl getUserAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserDetailsImpl) authentication.getPrincipal();
     }
 
 
