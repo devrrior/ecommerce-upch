@@ -62,12 +62,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
         product.setId(productProjection.getId());
         product.setTitle(productProjection.getTitle());
         product.setDescription(productProjection.getDescription());
-        product.setImageUrl(productProjection.getImageUrl());
+        product.setImageUrl(productProjection.getImage_url());
         product.setStock(productProjection.getStock());
         product.setPrice(productProjection.getPrice());
         product.setUser(productProjection.getUser());
-        product.setProductCategories(productProjection.getProductCategories());
-        product.setOrderItems(productProjection.getOrderItems());
+
         return product;
     }
 
