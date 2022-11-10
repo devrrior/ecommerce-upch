@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
         return BaseResponse.builder()
                 .data(categories)
-                .message("Categories found correctly")
+                .message("Categories found")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK).build();
     }
@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements ICategoryService {
         Category category = findOneAndEnsureExists(id);
         return BaseResponse.builder()
                 .data(category)
-                .message("Category found correctly")
+                .message("Category found")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK).build();
     }
