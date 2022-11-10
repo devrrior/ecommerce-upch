@@ -51,6 +51,10 @@ public class OrderStatusServiceImpl implements IOrderStatusService {
 
     @Override
     public BaseResponse update(Long id, UpdateOrderStatusRequest request) {
+
+        if (repository.existsByName(request.getName()))
+            throw new UniqueConstraintViolationException("Name is already in use");
+
         OrderStatus orderStatus = findOneAndEnsureExistById(id);
         orderStatus = update(orderStatus, request);
 
