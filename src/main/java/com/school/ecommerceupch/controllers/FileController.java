@@ -20,7 +20,7 @@ public class FileController {
     }
 
     @DeleteMapping
-    public void delete(@RequestParam("imageUrl") String imageUrl) {
+    public void delete(@RequestParam String imageUrl) {
         service.delete(imageUrl);
     }
 
