@@ -8,6 +8,7 @@ import com.school.ecommerceupch.entities.projections.RoleProjection;
 import com.school.ecommerceupch.entities.projections.UserProjection;
 import com.school.ecommerceupch.repositories.IUserRoleRepository;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserRoleServiceImpl implements IUserRoleService {
 
-    private final IUserRoleRepository repository;
-
-
-    public UserRoleServiceImpl(IUserRoleRepository repository) {
-        this.repository = repository;
-
-    }
+    @Autowired
+    private IUserRoleRepository repository;
 
     @Override
     public BaseResponse listAllUsersByRoleId(Long id) {
