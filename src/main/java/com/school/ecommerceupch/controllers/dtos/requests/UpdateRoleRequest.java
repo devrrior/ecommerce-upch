@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class UpdateRoleRequest {
 
-    @NotNull
     @NotBlank
     private String name;
 }

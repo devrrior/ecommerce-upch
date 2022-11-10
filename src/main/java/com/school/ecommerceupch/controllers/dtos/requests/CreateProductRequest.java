@@ -21,8 +21,8 @@ public class CreateProductRequest {
     @NotBlank
     private String description;
 
-    @NotNull
-    private MultipartFile image;
+    @NotBlank
+    private String imageUrl;
 
     @NotNull
     private Integer stock;

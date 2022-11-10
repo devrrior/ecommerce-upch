@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 public class AuthenticationRequest {
 
     @Email
+    @NotEmpty
     private String email;
 
     @NotEmpty
