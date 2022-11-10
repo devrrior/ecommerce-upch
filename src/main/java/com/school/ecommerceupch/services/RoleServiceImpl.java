@@ -4,6 +4,7 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateRoleRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
+import com.school.ecommerceupch.controllers.exceptions.UniqueConstraintViolationException;
 import com.school.ecommerceupch.entities.Role;
 import com.school.ecommerceupch.repositories.IRoleRepository;
 import com.school.ecommerceupch.services.interfaces.IRoleService;
@@ -22,6 +23,10 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public BaseResponse create(CreateRoleRequest request) {
+
+        if(repository.existsByName(request.getName()))
+            throw new UniqueConstraintViolationException("Name is already in use");
+
         Role role = repository.save(from(request));
         return BaseResponse.builder()
                 .data(role)
@@ -58,6 +63,10 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public BaseResponse delete(Long id) {
+
+        if(!repository.existsById(id))
+            throw new ObjectNotFoundException("Role not found");
+
         repository.deleteById(id);
 
         return BaseResponse.builder()
