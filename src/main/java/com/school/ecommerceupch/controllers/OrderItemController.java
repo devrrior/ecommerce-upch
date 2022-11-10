@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("api/order-item")
 public class OrderItemController {
@@ -23,14 +25,14 @@ public class OrderItemController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody CreateOrderItemRequest request) {
+    public ResponseEntity<BaseResponse> create(@RequestBody @Valid CreateOrderItemRequest request) {
         BaseResponse baseResponse = service.create(request);
 
         return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody UpdateOrderItemRequest request) {
+    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateOrderItemRequest request) {
         BaseResponse baseResponse = service.update(id, request);
 
         return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
