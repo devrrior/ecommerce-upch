@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.school.ecommerceupch.services.interfaces.IFileService;
 import com.school.ecommerceupch.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,10 +21,14 @@ import java.io.File;
 @Service("s3")
 public class S3FileServiceImpl implements IFileService {
 
-    private final String ENDPOINT_URL = "";
-    private final String BUCKET_NAME = "";
-    private final String ACCESS_KEY = "";
-    private final String SECRET_KEY = "";
+    @Value("${AWS_S3_ENDPOINT_URL")
+    private String ENDPOINT_URL;
+    @Value("${AWS_S3_BUCKET_NAME")
+    private String BUCKET_NAME;
+    @Value("${AWS_ACCESS_KEY}")
+    private String ACCESS_KEY;
+    @Value("${AWS_SECRET_KEY}")
+    private String SECRET_KEY;
     private AmazonS3 s3client;
 
     private final FileUtils fileUtils;
