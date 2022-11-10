@@ -9,13 +9,16 @@ import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
 import com.school.ecommerceupch.entities.Order;
 import com.school.ecommerceupch.entities.OrderItem;
 import com.school.ecommerceupch.entities.Product;
+import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.repositories.IOrderItemRepository;
 import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.IOrderItemService;
 import com.school.ecommerceupch.services.interfaces.IOrderService;
 import com.school.ecommerceupch.services.interfaces.IProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +27,14 @@ import java.util.Collections;
 @Service
 public class OrderItemServiceImpl implements IOrderItemService {
 
-    private final IOrderItemRepository repository;
+    @Autowired
+    private IOrderItemRepository repository;
 
-    private final IProductService productService;
+    @Autowired
+    private IProductService productService;
 
-    private final IOrderService orderService;
-
-    public OrderItemServiceImpl(IOrderItemRepository repository, IProductService productService, IOrderService orderService) {
-        this.repository = repository;
-        this.productService = productService;
-        this.orderService = orderService;
-    }
+    @Autowired
+    private IOrderService orderService;
 
     private static UserDetailsImpl getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -44,9 +44,19 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public BaseResponse create(CreateOrderItemRequest request) {
 
-        Product product = productService.findOneAndEnsureExists(request.getProductId());
-        Order order = orderService.findOneAndEnsureExistById(request.getOrderId());
-        OrderItem orderItem = repository.save(from(request, product, order));
+        OrderItem orderItem;
+        Order order = orderService.findOneAndEnsureExistByOrderStatus_Name("PENDING");
+        OrderItem orderItemAlreadyExists = getOrderItemIfAlreadyExists(request, order);
+
+        if (orderItemAlreadyExists == null) {
+            Product product = productService.findOneAndEnsureExists(request.getProductId());
+
+            orderItem = repository.save(from(request, product, order));
+        } else {
+            orderItemAlreadyExists.setQuantity(orderItemAlreadyExists.getQuantity() + request.getQuantity());
+            orderItem = repository.save(orderItemAlreadyExists);
+        }
+
 
         return BaseResponse.builder()
                 .data(orderItem)
@@ -57,10 +67,23 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
     }
 
+    private static OrderItem getOrderItemIfAlreadyExists(CreateOrderItemRequest request, Order order) {
+        return order.getOrderItems().stream()
+                .filter(orderItem1 ->
+                        orderItem1.getProduct().getId().equals(request.getProductId())).findAny().orElse(null);
+    }
+
     @Override
     public BaseResponse get(Long id) {
 
+        UserDetailsImpl userDetails = getUserAuthenticated();
+
         OrderItem orderItem = findOneAndEnsureExistById(id);
+
+        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                && !userDetails.getUser().getId().equals(id))
+            throw new AccessDeniedException();
+
 
         return BaseResponse.builder()
                 .data(orderItem)
@@ -73,11 +96,11 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public BaseResponse update(Long id, UpdateOrderItemRequest request) {
 
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+        User userAuthenticated = getUserAuthenticated().getUser();
 
         OrderItem orderItem = findOneAndEnsureExistById(id);
 
-        if (!orderItem.getOrder().getUser().getId().equals(userAuthenticated.getUser().getId()))
+        if (!orderItem.getOrder().getUser().getId().equals(userAuthenticated.getId()))
             throw new AccessDeniedException();
 
         orderItem = update(orderItem, request);
@@ -92,11 +115,11 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public BaseResponse delete(Long id) {
 
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+        User userAuthenticated = getUserAuthenticated().getUser();
 
         OrderItem orderItem = findOneAndEnsureExistById(id);
 
-        if (!orderItem.getOrder().getUser().getId().equals(userAuthenticated.getUser().getId()))
+        if (!orderItem.getOrder().getUser().getId().equals(userAuthenticated.getId()))
             throw new AccessDeniedException();
 
         repository.deleteById(id);
@@ -125,8 +148,6 @@ public class OrderItemServiceImpl implements IOrderItemService {
     private OrderItem update(OrderItem orderItem, UpdateOrderItemRequest request) {
 
         orderItem.setQuantity(request.getQuantity());
-        orderItem.setProduct(request.getProduct());
-        orderItem.setProduct(request.getProduct());
         repository.save(orderItem);
         return orderItem;
     }
