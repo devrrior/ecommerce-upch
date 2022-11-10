@@ -1,6 +1,6 @@
 package com.school.ecommerceupch.entities.pivots;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.school.ecommerceupch.entities.Role;
 import com.school.ecommerceupch.entities.User;
 import lombok.Getter;
@@ -20,12 +20,12 @@ public class UserRole {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Role role;
 
 

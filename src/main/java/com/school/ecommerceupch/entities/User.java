@@ -1,6 +1,7 @@
 package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,18 +35,18 @@ public class User {
     private Date dateOfBirth;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Product> products;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Address> addresses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Order> orders;
 }

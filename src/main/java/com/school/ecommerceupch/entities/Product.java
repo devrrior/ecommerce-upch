@@ -2,6 +2,7 @@ package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,11 +33,11 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<ProductCategory> productCategories;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
@@ -45,7 +46,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "productStatus_id")
-    @JsonManagedReference
+    @JsonBackReference
     private ProductStatus productStatus;
 
 }

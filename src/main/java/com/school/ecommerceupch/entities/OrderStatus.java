@@ -1,6 +1,7 @@
 package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,6 @@ public class OrderStatus {
     private String name;
 
     @OneToMany(mappedBy = "orderStatus", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Order> orders;
 }
