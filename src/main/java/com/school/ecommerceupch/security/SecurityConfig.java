@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .antMatchers("/api/product/**").hasAnyRole("ADMIN")
                 .antMatchers("/api/product-status/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                .antMatchers("/api/role/**").hasAnyRole("ADMIN")
+                .antMatchers("/api/file/**").hasAnyRole("ADMIN")
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()
