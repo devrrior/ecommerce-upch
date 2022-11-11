@@ -9,7 +9,7 @@ public interface IProductService {
 
     BaseResponse get(Long id);
 
-    BaseResponse list();
+    BaseResponse list(String keyword);
 
     BaseResponse create(CreateProductRequest request);
 

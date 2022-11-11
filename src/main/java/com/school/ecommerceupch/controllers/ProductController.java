@@ -18,8 +18,8 @@ public class ProductController {
     private IProductService service;
 
     @GetMapping
-    public ResponseEntity<BaseResponse> list() {
-        BaseResponse response = service.list();
+    public ResponseEntity<BaseResponse> list(@RequestParam(required = false) String keyword) {
+        BaseResponse response = service.list(keyword);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 

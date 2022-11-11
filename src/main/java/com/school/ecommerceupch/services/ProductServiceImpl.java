@@ -55,8 +55,12 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public BaseResponse list() {
-        List<Product> products = repository.findAll();
+    public BaseResponse list(String keyword) {
+        List<Product> products;
+
+        if (keyword == null)
+            products = repository.findAll();
+        else products = repository.findAllByTitleContainsIgnoreCaseOrDescriptionContainsIgnoreCase(keyword, keyword);
 
         return BaseResponse.builder()
                 .data(products)
