@@ -112,6 +112,17 @@ public class OrderServiceImpl implements IOrderService {
         if (!order.getUser().getId().equals(userAuthenticated.getId()))
             throw new AccessDeniedException();
 
+        if (order.getOrderStatus().getName().equals("DELIVERED")
+                || order.getOrderStatus().getName().equals("IN_PROGRESS")) {
+
+            return BaseResponse.builder()
+                    .data(Collections.EMPTY_LIST)
+                    .message("Order deleted unsuccessful")
+                    .success(Boolean.FALSE)
+                    .httpStatus(HttpStatus.NO_CONTENT)
+                    .build();
+        }
+
         repository.deleteById(id);
 
         return BaseResponse.builder()
