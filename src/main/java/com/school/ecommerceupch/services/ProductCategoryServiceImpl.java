@@ -7,7 +7,9 @@ import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.entities.projections.CategoryProjection;
 import com.school.ecommerceupch.entities.projections.ProductProjection;
 import com.school.ecommerceupch.repositories.IProductCategoryRepository;
+import com.school.ecommerceupch.services.interfaces.ICategoryService;
 import com.school.ecommerceupch.services.interfaces.IProductCategoryService;
+import com.school.ecommerceupch.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,12 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     @Autowired
     private IProductCategoryRepository repository;
 
+    @Autowired
+    private ICategoryService categoryService;
+
+    @Autowired
+    private IProductService productService;
+
     @Override
     public ProductCategory create(Product product, Category category) {
         ProductCategory productCategory = new ProductCategory();
@@ -30,8 +38,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     }
 
     @Override
-    public BaseResponse listAllProductsByCategoryId(Long categoryId) {
-        List<ProductProjection> productProjections = repository.listAllProductsByCategoryId(categoryId);
+    public BaseResponse listAllProductsByCategoryName(String categoryName) {
+
+        categoryService.findOneAndEnsureExistByName(categoryName);
+
+        List<ProductProjection> productProjections = repository.listAllProductsByCategoryName(categoryName);
         List<Product> products = productProjections.stream()
                 .map(this::from)
                 .collect(Collectors.toList());
@@ -45,6 +56,9 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
 
     @Override
     public BaseResponse listAllCategoriesByProductId(Long productId) {
+
+        productService.findOneAndEnsureExists(productId);
+
         List<CategoryProjection> categoryProjections = repository.listAllCategoriesByProductId(productId);
         List<Category> categories = categoryProjections.stream()
                 .map(this::toCategoryFrom)

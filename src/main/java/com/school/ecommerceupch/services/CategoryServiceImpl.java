@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public BaseResponse get(Long id) {
-        Category category = findOneAndEnsureExists(id);
+        Category category = findOneAndEnsureExistById(id);
         return BaseResponse.builder()
                 .data(category)
                 .message("Category found")
@@ -58,7 +58,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public BaseResponse update(Long id, UpdateCategoryRequest request) {
-        Category category = findOneAndEnsureExists(id);
+        Category category = findOneAndEnsureExistById(id);
         category = update(category, request);
 
         return BaseResponse.builder()
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public BaseResponse delete(Long id) {
-        Category category = findOneAndEnsureExists(id);
+        Category category = findOneAndEnsureExistById(id);
         repository.delete(category);
 
         return BaseResponse.builder()
@@ -81,9 +81,15 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public Category findOneAndEnsureExists(Long id) {
+    public Category findOneAndEnsureExistById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Category not found"));
+    }
+
+    @Override
+    public Category findOneAndEnsureExistByName(String name) {
+        return repository.findByName(name)
+                .orElseThrow(()-> new ObjectNotFoundException("Category not found"));
     }
 
     private Category from(CreateCategoryRequest request) {

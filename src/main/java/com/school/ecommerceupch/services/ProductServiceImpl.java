@@ -124,7 +124,7 @@ public class ProductServiceImpl implements IProductService {
         List<ProductCategory> tempProductCategoryList = new ArrayList<>();
 
         for (Long categoryId : productCategoryIds) {
-            Category category = categoryService.findOneAndEnsureExists(categoryId);
+            Category category = categoryService.findOneAndEnsureExistById(categoryId);
             ProductCategory newCategory = productCategoryService.create(product, category);
             tempProductCategoryList.add(newCategory);
         }
