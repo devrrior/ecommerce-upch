@@ -15,27 +15,10 @@ public class OrderStatusController {
     @Autowired
     private IOrderStatusService service;
 
-    @GetMapping("{id}")
-    public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
-        BaseResponse response = service.get(id);
-        return new ResponseEntity<>(response, response.getHttpStatus());
-    }
+    @GetMapping
+    ResponseEntity<BaseResponse> list() {
+        BaseResponse baseResponse = service.list();
 
-    @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody CreateOrderStatusRequest request) {
-        BaseResponse response = service.create(request);
-        return new ResponseEntity<>(response, response.getHttpStatus());
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<BaseResponse> update(@RequestBody UpdateOrderStatusRequest request, @PathVariable Long id) {
-        BaseResponse response = service.update(id, request);
-        return new ResponseEntity<>(response, response.getHttpStatus());
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
-        BaseResponse response = service.delete(id);
-        return new ResponseEntity<>(response, response.getHttpStatus());
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
     }
 }

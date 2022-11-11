@@ -7,15 +7,8 @@ import com.school.ecommerceupch.entities.ProductStatus;
 
 public interface IProductStatusService {
 
-    BaseResponse get(Long id);
-
-    BaseResponse create(CreateProductStatusRequest request);
-
-    BaseResponse update(Long id, UpdateProductStatusRequest request);
-
-    BaseResponse delete(Long id);
+    BaseResponse list();
 
     ProductStatus findOneAndEnsureExistById(Long id);
 
-    ProductStatus findOneAndEnsureExistByName(String name);
 }
