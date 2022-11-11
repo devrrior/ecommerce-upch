@@ -1,9 +1,11 @@
 package com.school.ecommerceupch.services;
 
 import com.cloudinary.Cloudinary;
+import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IFileService;
 import com.school.ecommerceupch.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +39,7 @@ public class CloudinaryFileServiceImpl implements IFileService {
     }
 
     @Override
-    public String upload(MultipartFile multipartFile) {
+    public BaseResponse upload(MultipartFile multipartFile) {
         String fileUrl = "";
 
         try {
@@ -53,7 +55,14 @@ public class CloudinaryFileServiceImpl implements IFileService {
             e.printStackTrace();
         }
 
-        return fileUrl;
+        Map<String, String> message = new HashMap<>();
+        message.put("Image URL", fileUrl);
+
+        return BaseResponse.builder()
+                .message(message.toString())
+                .message("Image uploaded")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.CREATED).build();
     }
 
     @Override

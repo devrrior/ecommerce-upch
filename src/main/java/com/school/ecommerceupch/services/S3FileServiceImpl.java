@@ -9,14 +9,18 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IFileService;
 import com.school.ecommerceupch.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("s3")
 public class S3FileServiceImpl implements IFileService {
@@ -38,7 +42,7 @@ public class S3FileServiceImpl implements IFileService {
     }
 
     @Override
-    public String upload(MultipartFile multipartFile) {
+    public BaseResponse upload(MultipartFile multipartFile) {
         String fileUrl = "";
 
         try {
@@ -56,7 +60,14 @@ public class S3FileServiceImpl implements IFileService {
             e.printStackTrace();
         }
 
-        return fileUrl;
+        Map<String, String> message = new HashMap<>();
+        message.put("Image URL", fileUrl);
+
+        return BaseResponse.builder()
+                .message(message.toString())
+                .message("Image uploaded")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.CREATED).build();
     }
 
     @Override
