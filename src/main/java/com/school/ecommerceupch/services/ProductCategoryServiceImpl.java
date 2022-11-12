@@ -23,12 +23,6 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     @Autowired
     private IProductCategoryRepository repository;
 
-    @Autowired
-    private ICategoryService categoryService;
-
-    @Autowired
-    private IProductService productService;
-
     @Override
     public ProductCategory create(Product product, Category category) {
         ProductCategory productCategory = new ProductCategory();
@@ -39,8 +33,6 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
 
     @Override
     public BaseResponse listAllProductsByCategoryName(String categoryName) {
-
-        categoryService.findOneAndEnsureExistByName(categoryName);
 
         List<ProductProjection> productProjections = repository.listAllProductsByCategoryName(categoryName);
         List<Product> products = productProjections.stream()
@@ -56,8 +48,6 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
 
     @Override
     public BaseResponse listAllCategoriesByProductId(Long productId) {
-
-        productService.findOneAndEnsureExists(productId);
 
         List<CategoryProjection> categoryProjections = repository.listAllCategoriesByProductId(productId);
         List<Category> categories = categoryProjections.stream()

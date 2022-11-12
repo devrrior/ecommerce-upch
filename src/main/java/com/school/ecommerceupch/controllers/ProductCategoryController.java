@@ -16,9 +16,9 @@ public class ProductCategoryController {
     @Autowired
     private IProductCategoryService service;
 
-    @GetMapping("product/category/{categoryId}")
-    public ResponseEntity<BaseResponse> listAllProductsByCategoryId(@PathVariable Long categoryId) {
-        BaseResponse response = service.listAllProductsByCategoryId(categoryId);
+    @GetMapping("product/category/{categoryName}")
+    public ResponseEntity<BaseResponse> listAllProductsByCategoryName(@PathVariable String categoryName) {
+        BaseResponse response = service.listAllProductsByCategoryName(categoryName);
 
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
