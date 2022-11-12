@@ -11,6 +11,11 @@ Download POSTMAN collection [here](https://www.google.com)
 Our project bases on an ecommerce, where people can buy any product they want; within the platform, these users can look for their products, whether by title/description or category.
 Admins can access to their product management.
 
+## Important points before to continue
+If you want to get token as admin, use the following credentials:  
+Email: `admin@mail.com`  
+Password: `123`  
+
 **NOTE:**
 - 🔐 User has to be Admin
 - 🔒 Authentication is needed
@@ -27,7 +32,8 @@ Admins can access to their product management.
 ### User and Admin actions:
 
 - 🔓 Search product  
-   `GET /api/product` or `GET /api/product?keyword={something}`
+   `POST /api/product` or `GET /api/product?keyword={something}`  
+Note: To create user before you need to get the list category and productStatus
 - 🔓 Get product's info in detail  
    `GET /api/product/{id}`
 - 🔒 Add product to current order by creating an order item  
