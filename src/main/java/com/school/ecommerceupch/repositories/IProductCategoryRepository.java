@@ -22,4 +22,8 @@ public interface IProductCategoryRepository extends JpaRepository<ProductCategor
             "where products_categories.product_id = :productId", nativeQuery = true)
     List<CategoryProjection> listAllCategoriesByProductId(Long productId);
 
+    boolean existsByProductIdAndCategoryId(Long productId, Long categoryId);
+
+    ProductCategory findByProductIdAndCategoryId(Long productId, Long categoryId);
+
 }
