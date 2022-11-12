@@ -9,32 +9,49 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IFileService;
+import com.school.ecommerceupch.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-@Service
-public class FileServiceImpl implements IFileService {
+@Service("s3")
+public class S3FileServiceImpl implements IFileService {
 
-    private final String ENDPOINT_URL = "";
-    private final String BUCKET_NAME = "";
-    private final String ACCESS_KEY = "";
-    private final String SECRET_KEY = "";
+//    @Value("${AWS_S3_ENDPOINT_URL}")
+    private final String ENDPOINT_URL = "s3.us-east-1.amazonaws.com/";
+//     @Value("${AWS_S3_BUCKET_NAME}")
+    private final String BUCKET_NAME = "ecommerce-up";
+
+//    @Value("${AWS_ACCESS_KEY}")
+    private final String ACCESS_KEY = "AKIATLTSA5S7DKN6OW3J";
+
+//    @Value("${AWS_SECRET_KEY}")
+    private final String SECRET_KEY = "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";
+
     private AmazonS3 s3client;
 
+    private final FileUtils fileUtils;
+
+    public S3FileServiceImpl(FileUtils fileUtils) {
+        this.fileUtils = fileUtils;
+    }
+
     @Override
-    public String upload(MultipartFile multipartFile) {
+    public BaseResponse upload(MultipartFile multipartFile) {
         String fileUrl = "";
 
         try {
-            File file = convertMultipartFileToFile(multipartFile);
+            File file = fileUtils.convertMultipartFileToFile(multipartFile);
 
-            String fileName = generateFileName(multipartFile);
+            String fileName = fileUtils.generateFileName(multipartFile);
 
             fileUrl = "https://" + BUCKET_NAME + "." + ENDPOINT_URL + fileName;
 
@@ -46,25 +63,20 @@ public class FileServiceImpl implements IFileService {
             e.printStackTrace();
         }
 
-        return fileUrl;
+        Map<String, String> message = new HashMap<>();
+        message.put("Image URL", fileUrl);
+
+        return BaseResponse.builder()
+                .data(message)
+                .message("Image uploaded")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.CREATED).build();
     }
 
     @Override
-    public void delete(String filename) {
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(BUCKET_NAME, filename);
+    public void delete(String imageUrl) {
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(BUCKET_NAME, imageUrl);
         s3client.deleteObject(deleteObjectRequest);
-    }
-
-    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File convFile = new File(multipartFile.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(multipartFile.getBytes());
-        fos.close();
-        return convFile;
-    }
-
-    private String generateFileName(MultipartFile multipartFile) {
-        return multipartFile.getName().replace(" ", "_");
     }
 
     private void uploadFileToS3Bucket(String fileName, File file) {

@@ -3,17 +3,15 @@ package com.school.ecommerceupch.controllers;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateOrderRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IOrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api/order")
 @RestController
 public class OrderController {
-    private final IOrderService service;
-
-    public OrderController(IOrderService service) {
-        this.service = service;
-    }
+    @Autowired
+    private IOrderService service;
 
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id) {

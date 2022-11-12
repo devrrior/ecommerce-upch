@@ -10,21 +10,21 @@ import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.repositories.IAddressRepository;
 import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.IAddressService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AddressServiceImpl implements IAddressService {
 
-    private final IAddressRepository repository;
-
-    public AddressServiceImpl(IAddressRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private IAddressRepository repository;
 
     private static UserDetailsImpl getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -33,9 +33,10 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public BaseResponse create(CreateAddressRequest request) {
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
 
-        Address address = repository.save(from(request, userAuthenticated.getUser()));
+        User user = getUserAuthenticated().getUser();
+
+        Address address = repository.save(from(request, user));
 
         return BaseResponse.builder()
                 .data(address)
@@ -49,12 +50,13 @@ public class AddressServiceImpl implements IAddressService {
     @Override
     public BaseResponse get(Long id) {
 
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
-
-        if (!userAuthenticated.getUser().getId().equals(id))
-            throw new AccessDeniedException();
+        User user = getUserAuthenticated().getUser();
 
         Address address = findOneAndEnsureExistById(id);
+
+        if (!user.getId().equals(address.getUser().getId()))
+            throw new AccessDeniedException();
+
 
         return BaseResponse.builder()
                 .data(address)
@@ -65,22 +67,39 @@ public class AddressServiceImpl implements IAddressService {
     }
 
     @Override
-    public BaseResponse update(Long id, UpdateAddressRequest request) {
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+    public BaseResponse list(Long userId) {
 
-        if (!userAuthenticated.getUser().getId().equals(id))
-            throw new AccessDeniedException();
+        List<Address> addresses = new ArrayList<>();
+
+        if (userId != null) {
+            addresses = repository.findAllByUserId(userId);
+        } else {
+            addresses = repository.findAll();
+        }
+
+        return BaseResponse.builder()
+                .data(addresses)
+                .message("Addresses found")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public BaseResponse update(Long id, UpdateAddressRequest request) {
+
+        User user = getUserAuthenticated().getUser();
 
         Address address = findOneAndEnsureExistById(id);
 
-        if (!address.getUser().getId().equals(userAuthenticated.getUser().getId()))
+        if (!user.getId().equals(address.getUser().getId()))
             throw new AccessDeniedException();
 
         address = update(address, request);
 
         return BaseResponse.builder()
                 .data(address)
-                .message("Address update")
+                .message("Address updated correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
                 .build();
@@ -89,19 +108,21 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public BaseResponse delete(Long id) {
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
 
         if (!repository.existsById(id))
             throw new ObjectNotFoundException("Address not found");
 
-        if (!userAuthenticated.getUser().getId().equals(id))
+        Address address = findOneAndEnsureExistById(id);
+        User user = getUserAuthenticated().getUser();
+
+        if (!user.getId().equals(address.getUser().getId()))
             throw new AccessDeniedException();
 
         repository.deleteById(id);
 
         return BaseResponse.builder()
                 .data(Collections.EMPTY_LIST)
-                .message("Address deleted correctly ")
+                .message("Address deleted correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.NO_CONTENT)
                 .build();
@@ -120,6 +141,8 @@ public class AddressServiceImpl implements IAddressService {
         address.setState(request.getState());
         address.setCountry(request.getCountry());
         address.setUser(user);
+
+        repository.save(address);
 
         return address;
     }

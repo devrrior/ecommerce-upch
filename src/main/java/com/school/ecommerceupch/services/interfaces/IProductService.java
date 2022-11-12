@@ -9,15 +9,11 @@ public interface IProductService {
 
     BaseResponse get(Long id);
 
-    BaseResponse list();
+    BaseResponse list(String keyword);
 
     BaseResponse create(CreateProductRequest request);
 
     BaseResponse update(Long id, UpdateProductRequest request);
-
-    BaseResponse delete(Long id);
-
-    void updateProductImage(String productImageUrl, Long idProduct);
 
     Product findOneAndEnsureExists(Long id);
 

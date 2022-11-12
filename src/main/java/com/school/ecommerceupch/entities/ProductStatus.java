@@ -9,25 +9,19 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
 @Getter
 @Setter
-public class Order {
+@Table(name = "productStatus")
+public class ProductStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "orderStatus_id")
-    @JsonBackReference
-    private OrderStatus orderStatus;
+    @Column(unique = true)
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToMany(mappedBy = "productStatus", cascade = CascadeType.ALL)
     @JsonBackReference
-    private User user;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<OrderItem> orderItems;
+    List<Product> products;
 }

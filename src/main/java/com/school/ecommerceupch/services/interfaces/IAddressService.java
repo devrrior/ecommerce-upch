@@ -12,6 +12,8 @@ public interface IAddressService {
 
     BaseResponse get(Long id);
 
+    BaseResponse list(Long userId);
+
     BaseResponse update(Long id, UpdateAddressRequest request);
 
     BaseResponse delete(Long id);

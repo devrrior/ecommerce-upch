@@ -6,13 +6,8 @@ import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.entities.OrderStatus;
 
 public interface IOrderStatusService {
-    BaseResponse create(CreateOrderStatusRequest request);
 
-    BaseResponse get(Long id);
-
-    BaseResponse update(Long Id, UpdateOrderStatusRequest request);
-
-    BaseResponse delete(Long Id);
+    BaseResponse list();
 
     OrderStatus findOneAndEnsureExistById(Long id);
 

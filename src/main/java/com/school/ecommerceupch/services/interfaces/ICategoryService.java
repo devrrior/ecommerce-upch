@@ -17,6 +17,8 @@ public interface ICategoryService {
 
     BaseResponse delete(Long id);
 
-    Category findOneAndEnsureExists(Long id);
+    Category findOneAndEnsureExistById(Long id);
+
+    Category findOneAndEnsureExistByName(String name);
 
 }

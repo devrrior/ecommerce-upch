@@ -2,6 +2,7 @@ package com.school.ecommerceupch.controllers;
 
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.services.interfaces.IProductCategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,15 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/product-category")
 public class ProductCategoryController {
 
-    private final IProductCategoryService service;
+    @Autowired
+    private IProductCategoryService service;
 
-    public ProductCategoryController(IProductCategoryService service) {
-        this.service = service;
-    }
-
-    @GetMapping("product/category/{categoryId}")
-    public ResponseEntity<BaseResponse> listAllProductsByCategoryId(@PathVariable Long categoryId) {
-        BaseResponse response = service.listAllProductsByCategoryId(categoryId);
+    @GetMapping("product/category/{categoryName}")
+    public ResponseEntity<BaseResponse> listAllProductsByCategoryName(@PathVariable String categoryName) {
+        BaseResponse response = service.listAllProductsByCategoryName(categoryName);
 
         return new ResponseEntity<>(response, response.getHttpStatus());
     }

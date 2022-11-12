@@ -15,6 +15,7 @@ import com.school.ecommerceupch.security.UserDetailsImpl;
 import com.school.ecommerceupch.services.interfaces.IRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserRoleService;
 import com.school.ecommerceupch.services.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,15 +29,15 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements IUserService {
-    private final IUserRepository repository;
-    private final IRoleService roleService;
-    private final IUserRoleService userRoleService;
 
-    public UserServiceImpl(IUserRepository repository, IRoleService roleService, IUserRoleService userRoleService) {
-        this.repository = repository;
-        this.roleService = roleService;
-        this.userRoleService = userRoleService;
-    }
+    @Autowired
+    private IUserRepository repository;
+
+    @Autowired
+    private IRoleService roleService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
 
     private static UserDetailsImpl getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,8 +49,8 @@ public class UserServiceImpl implements IUserService {
 
         UserDetailsImpl userDetails = getUserAuthenticated();
 
-        if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                || !userDetails.getUser().getId().equals(id))
+        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                && !userDetails.getUser().getId().equals(id))
             throw new AccessDeniedException();
 
         User user = findOneAndEnsureExistById(id);
@@ -85,17 +86,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public BaseResponse update(UpdateUserRequest request, Long id) {
 
-        UserDetailsImpl userDetails = getUserAuthenticated();
+        User userAuthenticated = getUserAuthenticated().getUser();
 
-        if (!userDetails.getUser().getId().equals(id))
+        if (!userAuthenticated.getId().equals(id))
             throw new AccessDeniedException();
 
-        User user = findOneAndEnsureExistById(id);
-
-        user = update(user, request);
+        userAuthenticated = update(userAuthenticated, request);
 
         return BaseResponse.builder()
-                .data(from(user))
+                .data(from(userAuthenticated))
                 .message("User updated correctly")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
@@ -105,9 +104,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public BaseResponse delete(Long id) {
 
-        UserDetailsImpl userDetails = getUserAuthenticated();
+        User user = getUserAuthenticated().getUser();
 
-        if (!userDetails.getUser().getId().equals(id))
+        if (!user.getId().equals(id))
             throw new AccessDeniedException();
 
         if (!repository.existsById(id))
@@ -146,7 +145,7 @@ public class UserServiceImpl implements IUserService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDateOfBirth(request.getDateOfBirth());
-        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        user.setPassword(encodePassword(request.getPassword()));
 
         repository.save(user);
 
@@ -159,9 +158,13 @@ public class UserServiceImpl implements IUserService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDateOfBirth(request.getDateOfBirth());
-        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        user.setPassword(encodePassword(request.getPassword()));
 
         return user;
+    }
+
+    private static String encodePassword(String request) {
+        return new BCryptPasswordEncoder().encode(request);
     }
 
     private UserResponse from(User user) {

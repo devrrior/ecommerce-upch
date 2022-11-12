@@ -7,7 +7,9 @@ import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.entities.projections.CategoryProjection;
 import com.school.ecommerceupch.entities.projections.ProductProjection;
 import com.school.ecommerceupch.repositories.IProductCategoryRepository;
+import com.school.ecommerceupch.services.interfaces.ICategoryService;
 import com.school.ecommerceupch.services.interfaces.IProductCategoryService;
+import com.school.ecommerceupch.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
 
     @Override
     public ProductCategory create(Product product, Category category) {
+
+        if(repository.existsByProductIdAndCategoryId(product.getId(), category.getId())){
+            return repository.findByProductIdAndCategoryId(product.getId(), category.getId());
+        }
+
         ProductCategory productCategory = new ProductCategory();
         productCategory.setProduct(product);
         productCategory.setCategory(category);
@@ -30,8 +37,9 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     }
 
     @Override
-    public BaseResponse listAllProductsByCategoryId(Long categoryId) {
-        List<ProductProjection> productProjections = repository.listAllProductsByCategoryId(categoryId);
+    public BaseResponse listAllProductsByCategoryName(String categoryName) {
+
+        List<ProductProjection> productProjections = repository.listAllProductsByCategoryName(categoryName);
         List<Product> products = productProjections.stream()
                 .map(this::from)
                 .collect(Collectors.toList());
@@ -40,11 +48,12 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
                 .data(products)
                 .message("Products found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override
     public BaseResponse listAllCategoriesByProductId(Long productId) {
+
         List<CategoryProjection> categoryProjections = repository.listAllCategoriesByProductId(productId);
         List<Category> categories = categoryProjections.stream()
                 .map(this::toCategoryFrom)
@@ -54,7 +63,7 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
                 .data(categories)
                 .message("Categories found correctly")
                 .success(Boolean.TRUE)
-                .httpStatus(HttpStatus.FOUND).build();
+                .httpStatus(HttpStatus.OK).build();
     }
 
     private Product from(ProductProjection productProjection) {
@@ -62,12 +71,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
         product.setId(productProjection.getId());
         product.setTitle(productProjection.getTitle());
         product.setDescription(productProjection.getDescription());
-        product.setImageUrl(productProjection.getImageUrl());
+        product.setImageUrl(productProjection.getImage_url());
         product.setStock(productProjection.getStock());
         product.setPrice(productProjection.getPrice());
         product.setUser(productProjection.getUser());
-        product.setProductCategories(productProjection.getProductCategories());
-        product.setOrderItems(productProjection.getOrderItems());
+
         return product;
     }
 

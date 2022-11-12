@@ -32,15 +32,20 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "category")
-    @JsonBackReference
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ProductCategory> productCategories;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<OrderItem> orderItems;
+
+    @ManyToOne
+    @JoinColumn(name = "productStatus_id")
+    @JsonManagedReference
+    private ProductStatus productStatus;
 
 }

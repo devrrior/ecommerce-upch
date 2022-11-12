@@ -13,13 +13,18 @@ public interface IProductCategoryRepository extends JpaRepository<ProductCategor
     @Query(value = "select products.*  from products_categories " +
             "inner join products on products_categories.product_id = products.id " +
             "inner join categories on products_categories.category_id = categories.id " +
-            "where products_categories.category_id = :categoryId", nativeQuery = true)
-    List<ProductProjection> listAllProductsByCategoryId(Long categoryId);
+            "where categories.name = :categoryName", nativeQuery = true)
+    List<ProductProjection> listAllProductsByCategoryName(String categoryName);
+
 
     @Query(value = "select categories.* from products_categories " +
             "inner join categories on products_categories.category_id = categories.id " +
             "inner join products on products_categories.product_id = products.id " +
             "where products_categories.product_id = :productId", nativeQuery = true)
     List<CategoryProjection> listAllCategoriesByProductId(Long productId);
+
+    boolean existsByProductIdAndCategoryId(Long productId, Long categoryId);
+
+    ProductCategory findByProductIdAndCategoryId(Long productId, Long categoryId);
 
 }

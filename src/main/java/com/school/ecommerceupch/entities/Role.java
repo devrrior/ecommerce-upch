@@ -1,6 +1,7 @@
 package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.school.ecommerceupch.entities.pivots.UserRole;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class Role {
     @Column(length = 150, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE)
-    @JsonBackReference
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<UserRole> userRoles;
 }

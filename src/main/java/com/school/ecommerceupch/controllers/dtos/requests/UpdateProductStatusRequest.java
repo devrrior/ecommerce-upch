@@ -7,17 +7,10 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class UpdateAddressRequest {
+public class UpdateProductStatusRequest {
 
     @NotBlank
-    private String street;
+    private String name;
 
-    @NotBlank
-    private String zipcode;
 
-    @NotBlank
-    private String state;
-
-    @NotBlank
-    private String country;
 }

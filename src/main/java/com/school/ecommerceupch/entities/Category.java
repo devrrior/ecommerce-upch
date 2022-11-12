@@ -1,6 +1,7 @@
 package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class Category {
     @Column(length = 100, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<ProductCategory> productCategories;
 }

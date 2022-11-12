@@ -28,6 +28,6 @@ public class UpdateUserRequest {
     private String password;
 
     @NotNull
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
 }

@@ -9,7 +9,7 @@ public interface IProductCategoryService {
 
     ProductCategory create(Product product, Category category);
 
-    BaseResponse listAllProductsByCategoryId(Long categoryId);
+    BaseResponse listAllProductsByCategoryName(String categoryName);
 
     BaseResponse listAllCategoriesByProductId(Long productId);
 

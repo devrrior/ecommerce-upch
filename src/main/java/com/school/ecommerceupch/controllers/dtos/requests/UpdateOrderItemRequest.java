@@ -5,11 +5,13 @@ import com.school.ecommerceupch.entities.Product;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 public class UpdateOrderItemRequest {
 
+    @NotNull
     private Integer quantity;
-    private Product product;
-    private Order order;
+
 }
