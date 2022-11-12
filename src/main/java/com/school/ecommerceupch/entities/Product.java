@@ -2,7 +2,6 @@ package com.school.ecommerceupch.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +45,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "productStatus_id")
-    @JsonBackReference
+    @JsonManagedReference
     private ProductStatus productStatus;
 
 }
