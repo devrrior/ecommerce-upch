@@ -23,6 +23,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
 
     @Override
     public ProductCategory create(Product product, Category category) {
+
+        if(repository.existsByProductIdAndCategoryId(product.getId(), category.getId())){
+            return repository.findByProductIdAndCategoryId(product.getId(), category.getId());
+        }
+
         ProductCategory productCategory = new ProductCategory();
         productCategory.setProduct(product);
         productCategory.setCategory(category);
