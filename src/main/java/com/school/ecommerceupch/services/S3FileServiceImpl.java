@@ -25,14 +25,17 @@ import java.util.Map;
 @Service("s3")
 public class S3FileServiceImpl implements IFileService {
 
-    @Value("${AWS_S3_ENDPOINT_URL")
-    private String ENDPOINT_URL;
-    @Value("${AWS_S3_BUCKET_NAME")
-    private String BUCKET_NAME;
-    @Value("${AWS_ACCESS_KEY}")
-    private String ACCESS_KEY;
-    @Value("${AWS_SECRET_KEY}")
-    private String SECRET_KEY;
+//    @Value("${AWS_S3_ENDPOINT_URL}")
+    private final String ENDPOINT_URL = "s3.us-east-1.amazonaws.com/";
+//     @Value("${AWS_S3_BUCKET_NAME}")
+    private final String BUCKET_NAME = "ecommerce-up";
+
+//    @Value("${AWS_ACCESS_KEY}")
+    private final String ACCESS_KEY = "AKIATLTSA5S7DKN6OW3J";
+
+//    @Value("${AWS_SECRET_KEY}")
+    private final String SECRET_KEY = "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";
+
     private AmazonS3 s3client;
 
     private final FileUtils fileUtils;
@@ -64,7 +67,7 @@ public class S3FileServiceImpl implements IFileService {
         message.put("Image URL", fileUrl);
 
         return BaseResponse.builder()
-                .message(message.toString())
+                .data(message)
                 .message("Image uploaded")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.CREATED).build();
