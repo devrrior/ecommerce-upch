@@ -51,7 +51,6 @@ public class SecurityConfig {
                 .antMatchers("/api/category/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/order/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/order/**").hasAnyRole("ADMIN")
-                .antMatchers("/api/order-item/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                 .antMatchers("/api/product/**").hasAnyRole("ADMIN")
