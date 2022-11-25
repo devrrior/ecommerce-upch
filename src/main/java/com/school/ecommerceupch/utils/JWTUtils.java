@@ -16,12 +16,13 @@ public class JWTUtils {
     private final String ACCESS_TOKEN_SECRET = "b0f7247ad9dbff2e3b51e60756a8f177703e6fd45df858581801f688ed6c5e21";
     private final Long ACCESS_TOKEN_VALIDATION_SECONDS = 2_592_000L;
 
-    public String generateToken(Map<String, Object> payload) {
+    public String generateToken(String email, Map<String, Object> payload) {
         Long expirationTime = ACCESS_TOKEN_VALIDATION_SECONDS * 1_000;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
         return Jwts.builder()
                 .setExpiration(expirationDate)
+                .setSubject(email)
                 .addClaims(payload)
                 .signWith(Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes()))
                 .compact();

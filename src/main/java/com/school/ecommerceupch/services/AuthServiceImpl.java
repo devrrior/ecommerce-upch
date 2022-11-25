@@ -48,11 +48,10 @@ public class AuthServiceImpl implements IAuthService {
                 .stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
         payload.put("userId", userDetails.getUser().getId());
-        payload.put("email", email);
         payload.put("fullName", fullName);
         payload.put("roles", roles);
 
-        String token = jwtUtils.generateToken(payload);
+        String token = jwtUtils.generateToken(email, payload);
 
         Map<String, String> data = new HashMap<>();
         data.put("accessToken", token);
