@@ -71,11 +71,11 @@ public class OrderServiceImpl implements IOrderService {
 
         UserDetailsImpl userDetails = getUserAuthenticated();
 
-        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                && !userDetails.getUser().getId().equals(id))
-            throw new AccessDeniedException();
-
         Order order = findOneAndEnsureExistById(id);
+
+        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                && !userDetails.getUser().getId().equals(order.getUser().getId()))
+            throw new AccessDeniedException();
 
         return BaseResponse.builder()
                 .data(order)
