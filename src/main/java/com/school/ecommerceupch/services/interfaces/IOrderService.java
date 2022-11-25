@@ -16,5 +16,5 @@ public interface IOrderService {
 
     Order findOneAndEnsureExistById(Long id);
 
-    Order findOneAndEnsureExistByOrderStatus_Name(String name);
+    Order findOneAndEnsureExistByOrderStatus_NameAndUser_Id(String name, Long userId);
 }

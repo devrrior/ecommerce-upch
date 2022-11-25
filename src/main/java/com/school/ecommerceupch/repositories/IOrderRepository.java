@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface IOrderRepository extends JpaRepository<Order, Long> {
 
-    Optional<Order> getOneByOrderStatus_Name(String name);
+    Optional<Order> getOneByOrderStatus_NameAndUser_Id(String name, Long userId);
 }

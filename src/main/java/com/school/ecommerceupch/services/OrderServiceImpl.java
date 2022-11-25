@@ -38,11 +38,11 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public BaseResponse create() {
 
-        UserDetailsImpl userAuthenticated = getUserAuthenticated();
+        User userAuthenticated = getUserAuthenticated().getUser();
 
         Order order;
 
-        Optional<Order> orderOptional = repository.getOneByOrderStatus_Name("PENDING");
+        Optional<Order> orderOptional = repository.getOneByOrderStatus_NameAndUser_Id("PENDING", userAuthenticated.getId());
 
         order = orderOptional.orElseGet(() -> create(userAuthenticated));
 
@@ -54,12 +54,12 @@ public class OrderServiceImpl implements IOrderService {
                 .build();
     }
 
-    private Order create(UserDetailsImpl userAuthenticated) {
+    private Order create(User userAuthenticated) {
         Order order = new Order();
         OrderStatus defaultOrderStatus = orderStatusService.findOneAndEnsureExistByName("PENDING");
 
         order.setOrderStatus(defaultOrderStatus);
-        order.setUser(userAuthenticated.getUser());
+        order.setUser(userAuthenticated);
         order.setOrderItems(Collections.EMPTY_LIST);
 
         order = repository.save(order);
@@ -139,8 +139,8 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public Order findOneAndEnsureExistByOrderStatus_Name(String name) {
-        return repository.getOneByOrderStatus_Name(name).orElseThrow(() -> new ObjectNotFoundException("Order not found"));
+    public Order findOneAndEnsureExistByOrderStatus_NameAndUser_Id(String name, Long userId) {
+        return repository.getOneByOrderStatus_NameAndUser_Id(name, userId).orElseThrow(() -> new ObjectNotFoundException("Order not found"));
     }
 
     private Order update(Order order, OrderStatus orderStatus) {
