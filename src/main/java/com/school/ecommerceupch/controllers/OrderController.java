@@ -19,6 +19,12 @@ public class OrderController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
+    @GetMapping("user")
+    public ResponseEntity<BaseResponse> getByUserId(@RequestParam(required = false) Long id) {
+        BaseResponse response = service.getOrderByUserId(id);
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponse> create() {
         BaseResponse response = service.create();
