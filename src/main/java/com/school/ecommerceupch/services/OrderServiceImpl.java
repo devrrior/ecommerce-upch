@@ -134,6 +134,30 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public BaseResponse getOrderByUserId(Long id) {
+        UserDetailsImpl userDetails = getUserAuthenticated();
+        User userAuthenticated = userDetails.getUser();
+
+        Long userId = id!=null ? id : userAuthenticated.getId();
+
+        Order order = repository.findByUserId(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Order Not Found"));
+
+        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                && !userDetails.getUser().getId().equals(order.getUser().getId())) {
+            throw new AccessDeniedException();
+        }
+
+        return BaseResponse.builder()
+                .data(order)
+                .message("Order already exists")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+
+    @Override
     public Order findOneAndEnsureExistById(Long id) {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Order not found"));
     }
@@ -141,6 +165,14 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public Order findOneAndEnsureExistByOrderStatus_NameAndUser_Id(String name, Long userId) {
         return repository.getOneByOrderStatus_NameAndUser_Id(name, userId).orElseThrow(() -> new ObjectNotFoundException("Order not found"));
+    }
+
+    @Override
+    public Order findOneByUserIdOrCreate(Long id) {
+        User userAuthenticated = getUserAuthenticated().getUser();
+
+        return repository.findByUserId(id)
+                .orElseGet(() -> create(userAuthenticated));
     }
 
     private Order update(Order order, OrderStatus orderStatus) {
