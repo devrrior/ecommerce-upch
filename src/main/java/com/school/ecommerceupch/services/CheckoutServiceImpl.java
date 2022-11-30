@@ -10,7 +10,9 @@ import com.school.ecommerceupch.services.interfaces.IOrderService;
 import com.school.ecommerceupch.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CheckoutServiceImpl implements ICheckoutService {
 
     @Autowired
