@@ -47,6 +47,6 @@ public class User {
     private List<Address> addresses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Order> orders;
 }
