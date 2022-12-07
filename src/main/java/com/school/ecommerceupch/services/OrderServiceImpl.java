@@ -18,7 +18,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -140,7 +142,7 @@ public class OrderServiceImpl implements IOrderService {
 
         Long userId = id!=null ? id : userAuthenticated.getId();
 
-        Order order = repository.findByUserId(userId)
+        Order order = repository.getOneByOrderStatus_NameAndUser_Id("PENDING",userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Order Not Found"));
 
         if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
@@ -150,6 +152,32 @@ public class OrderServiceImpl implements IOrderService {
 
         return BaseResponse.builder()
                 .data(order)
+                .message("Order already exists")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    public BaseResponse getDeliveredAndInProgressOrderByUserId(Long id) {
+        UserDetailsImpl userDetails = getUserAuthenticated();
+        User userAuthenticated = userDetails.getUser();
+        List<Order> orderList = new ArrayList<>();
+
+        Long userId = id!=null ? id : userAuthenticated.getId();
+
+        List<Order> inProgressOrders = repository.getAllByOrderStatus_NameAndUser_Id("IN_PROGRESS", userId);
+        List<Order> deliveredOrders = repository.getAllByOrderStatus_NameAndUser_Id("DELIVERED", userId);
+
+        orderList.addAll(inProgressOrders);
+        orderList.addAll(deliveredOrders);
+
+        if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                && !userDetails.getUser().getId().equals(orderList.get(0).getUser().getId())) {
+            throw new AccessDeniedException();
+        }
+
+        return BaseResponse.builder()
+                .data(orderList)
                 .message("Order already exists")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.OK)
@@ -171,7 +199,7 @@ public class OrderServiceImpl implements IOrderService {
     public Order findOneByUserIdOrCreate(Long id) {
         User userAuthenticated = getUserAuthenticated().getUser();
 
-        return repository.findByUserId(id)
+        return repository.getOneByOrderStatus_NameAndUser_Id("PENDING", id)
                 .orElseGet(() -> create(userAuthenticated));
     }
 
