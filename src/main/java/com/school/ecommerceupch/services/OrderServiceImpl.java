@@ -38,6 +38,17 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public BaseResponse list() {
+        List<Order> orders = repository.findAll();
+
+        return BaseResponse.builder()
+                .data(orders)
+                .message("Orders were found")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.OK).build();
+    }
+
+    @Override
     public BaseResponse create() {
 
         User userAuthenticated = getUserAuthenticated().getUser();
@@ -140,7 +151,7 @@ public class OrderServiceImpl implements IOrderService {
         UserDetailsImpl userDetails = getUserAuthenticated();
         User userAuthenticated = userDetails.getUser();
 
-        Long userId = id!=null ? id : userAuthenticated.getId();
+        Long userId = id != null ? id : userAuthenticated.getId();
 
         Order order = repository.getOneByOrderStatus_NameAndUser_Id("PENDING",userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Order Not Found"));

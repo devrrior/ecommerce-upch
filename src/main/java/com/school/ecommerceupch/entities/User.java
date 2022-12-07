@@ -39,7 +39,7 @@ public class User {
     private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Product> products;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

@@ -32,7 +32,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonManagedReference
     private User user;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
