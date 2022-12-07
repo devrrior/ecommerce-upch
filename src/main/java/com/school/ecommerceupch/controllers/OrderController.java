@@ -25,6 +25,12 @@ public class OrderController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
+    @GetMapping("all/user")
+    public ResponseEntity<BaseResponse> getDeliveredAndInProgressByUserId(@RequestParam(required = false) Long id) {
+        BaseResponse response = service.getDeliveredAndInProgressOrderByUserId(id);
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponse> create() {
         BaseResponse response = service.create();
