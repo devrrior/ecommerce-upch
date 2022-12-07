@@ -19,7 +19,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "orderStatus_id")
-    @JsonBackReference
+    @JsonManagedReference
     private OrderStatus orderStatus;
 
     @ManyToOne
