@@ -20,5 +20,7 @@ public interface IOrderService {
 
     Order findOneAndEnsureExistByOrderStatus_NameAndUser_Id(String name, Long userId);
 
+    BaseResponse getDeliveredAndInProgressOrderByUserId(Long userId);
+
     Order findOneByUserIdOrCreate(Long id);
 }
