@@ -6,6 +6,8 @@ import com.school.ecommerceupch.entities.Order;
 
 public interface IOrderService {
 
+    BaseResponse list();
+
     BaseResponse create();
 
     BaseResponse get(Long id);

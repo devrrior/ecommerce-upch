@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/category/**").permitAll()
                 .antMatchers("/api/category/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/order").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/order/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/order/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()

@@ -13,6 +13,13 @@ public class OrderController {
     @Autowired
     private IOrderService service;
 
+    @GetMapping
+    public ResponseEntity<BaseResponse> list() {
+        BaseResponse baseResponse = service.list();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
         BaseResponse response = service.get(id);

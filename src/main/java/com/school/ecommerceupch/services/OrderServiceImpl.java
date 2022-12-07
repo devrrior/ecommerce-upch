@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +34,17 @@ public class OrderServiceImpl implements IOrderService {
     private static UserDetailsImpl getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (UserDetailsImpl) authentication.getPrincipal();
+    }
+
+    @Override
+    public BaseResponse list() {
+        List<Order> orders = repository.findAll();
+
+        return BaseResponse.builder()
+                .data(orders)
+                .message("Orders were found")
+                .success(Boolean.TRUE)
+                .httpStatus(HttpStatus.OK).build();
     }
 
     @Override
@@ -138,7 +150,7 @@ public class OrderServiceImpl implements IOrderService {
         UserDetailsImpl userDetails = getUserAuthenticated();
         User userAuthenticated = userDetails.getUser();
 
-        Long userId = id!=null ? id : userAuthenticated.getId();
+        Long userId = id != null ? id : userAuthenticated.getId();
 
         Order order = repository.findByUserId(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Order Not Found"));
