@@ -22,6 +22,6 @@ public class OrderStatus {
     private String name;
 
     @OneToMany(mappedBy = "orderStatus", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Order> orders;
 }

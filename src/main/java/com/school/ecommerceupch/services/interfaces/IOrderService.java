@@ -6,8 +6,6 @@ import com.school.ecommerceupch.entities.Order;
 
 public interface IOrderService {
 
-    BaseResponse list();
-
     BaseResponse create();
 
     BaseResponse get(Long id);
@@ -16,13 +14,7 @@ public interface IOrderService {
 
     BaseResponse delete(Long id);
 
-    BaseResponse getOrderByUserId(Long id);
-
     Order findOneAndEnsureExistById(Long id);
 
-    Order findOneAndEnsureExistByOrderStatus_NameAndUser_Id(String name, Long userId);
-
-    BaseResponse getDeliveredAndInProgressOrderByUserId(Long userId);
-
-    Order findOneByUserIdOrCreate(Long id);
+    Order findOneAndEnsureExistByOrderStatus_Name(String name);
 }

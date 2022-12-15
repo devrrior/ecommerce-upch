@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
     @Autowired
-    @Qualifier("cloudinary")
+    @Qualifier("s3")
     private IFileService service;
 
     @PostMapping

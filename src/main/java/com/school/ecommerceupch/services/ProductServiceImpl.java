@@ -4,7 +4,10 @@ import com.school.ecommerceupch.controllers.dtos.requests.CreateProductRequest;
 import com.school.ecommerceupch.controllers.dtos.requests.UpdateProductRequest;
 import com.school.ecommerceupch.controllers.dtos.responses.BaseResponse;
 import com.school.ecommerceupch.controllers.exceptions.ObjectNotFoundException;
-import com.school.ecommerceupch.entities.*;
+import com.school.ecommerceupch.entities.Category;
+import com.school.ecommerceupch.entities.Product;
+import com.school.ecommerceupch.entities.ProductStatus;
+import com.school.ecommerceupch.entities.User;
 import com.school.ecommerceupch.entities.pivots.ProductCategory;
 import com.school.ecommerceupch.repositories.IProductRepository;
 import com.school.ecommerceupch.security.UserDetailsImpl;
@@ -100,12 +103,6 @@ public class ProductServiceImpl implements IProductService {
     public Product findOneAndEnsureExists(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Product not found"));
-    }
-
-    @Override
-    public void updateStock(Product product, Integer newStock) {
-        product.setStock(newStock);
-        repository.save(product);
     }
 
     private Product from(CreateProductRequest request, User user) {

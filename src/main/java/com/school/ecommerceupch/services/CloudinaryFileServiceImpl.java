@@ -56,11 +56,10 @@ public class CloudinaryFileServiceImpl implements IFileService {
         }
 
         Map<String, String> message = new HashMap<>();
-        message.put("url", fileUrl);
-
+        message.put("Image URL", fileUrl);
 
         return BaseResponse.builder()
-                .data(message)
+                .message(message.toString())
                 .message("Image uploaded")
                 .success(Boolean.TRUE)
                 .httpStatus(HttpStatus.CREATED).build();

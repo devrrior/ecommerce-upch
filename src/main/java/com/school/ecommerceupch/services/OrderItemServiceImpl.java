@@ -45,10 +45,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
     public BaseResponse create(CreateOrderItemRequest request) {
 
         OrderItem orderItem;
-
-        User userAuthenticated = getUserAuthenticated().getUser();
-
-        Order order = orderService.findOneByUserIdOrCreate(userAuthenticated.getId());
+        Order order = orderService.findOneAndEnsureExistByOrderStatus_Name("PENDING");
         OrderItem orderItemAlreadyExists = getOrderItemIfAlreadyExists(request, order);
 
         if (orderItemAlreadyExists == null) {

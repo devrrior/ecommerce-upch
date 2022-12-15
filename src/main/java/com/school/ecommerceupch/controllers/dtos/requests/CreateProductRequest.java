@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
+@Setter
 public class CreateProductRequest {
 
     @NotBlank
