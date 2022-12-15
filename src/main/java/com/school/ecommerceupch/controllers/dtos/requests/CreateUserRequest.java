@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Getter
-@Setter
 public class CreateUserRequest {
     @Email
     private String email;

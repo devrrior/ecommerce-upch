@@ -13,9 +13,28 @@ public class OrderController {
     @Autowired
     private IOrderService service;
 
+    @GetMapping
+    public ResponseEntity<BaseResponse> list() {
+        BaseResponse baseResponse = service.list();
+
+        return new ResponseEntity<>(baseResponse, baseResponse.getHttpStatus());
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<BaseResponse> get(@PathVariable Long id) {
         BaseResponse response = service.get(id);
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
+    @GetMapping("user")
+    public ResponseEntity<BaseResponse> getByUserId(@RequestParam(required = false) Long id) {
+        BaseResponse response = service.getOrderByUserId(id);
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
+    @GetMapping("all/user")
+    public ResponseEntity<BaseResponse> getDeliveredAndInProgressByUserId(@RequestParam(required = false) Long id) {
+        BaseResponse response = service.getDeliveredAndInProgressOrderByUserId(id);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 

@@ -1,6 +1,5 @@
 package com.school.ecommerceupch.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,12 +18,12 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "orderStatus_id")
-    @JsonBackReference
+    @JsonManagedReference
     private OrderStatus orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonManagedReference
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
